@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '100%',
     maxWidth: 400,
-    elevation: 5, // Android shadow effect
+    elevation: 5, 
   },
   input: {
     backgroundColor: '#2c2c2c',
