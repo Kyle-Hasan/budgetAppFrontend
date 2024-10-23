@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { useRouter, Link } from 'expo-router';
-
+import { authApi } from './api/api';
+import { setStorageValue } from './storage/storage';
 const SignupForm = () => {
   const router = useRouter();
 
@@ -20,12 +21,12 @@ const SignupForm = () => {
   });
 
   // Basic email validation
-  const validateEmail = (email: string) => {
+  const validateEmail = async (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     const newErrors = { username: '', email: '', password: '', confirmPassword: '' };
 
     if (formData.username.trim() === '') {
@@ -48,9 +49,24 @@ const SignupForm = () => {
       setErrors(newErrors);
     } else {
       setErrors({ username: '', email: '', password: '', confirmPassword: '' });
+
+
+     
      
       Alert.alert('Sign Up Successful', `Welcome ${formData.username}`);
       router.push('/login'); 
+    }
+    try{
+    const response = await authApi.signup({email:formData.email,username: formData.username, password: formData.password})
+    const {refreshToken, accessToken} = response.data
+    setStorageValue("refreshToken",refreshToken)
+    setStorageValue("accessToken",accessToken)
+    router.push('/budgetPage')
+
+    }
+    catch(e) {
+      debugger
+      console.error("error",e)
     }
   };
 
@@ -58,16 +74,19 @@ const SignupForm = () => {
     <View style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.login}>Sign Up Form</Text>
-
+        <Text style={styles.label}>Username</Text>
         <TextInput
-          placeholder="Username"
+          autoCapitalize='none'
+          autoCorrect={false}
           style={styles.input}
           value={formData.username}
           onChangeText={(text) => setFormData({ ...formData, username: text })}
         />
         {errors.username ? <Text style={styles.errorText}>{errors.username}</Text> : null}
-
+        <Text style={styles.label}>Email</Text>
         <TextInput
+          autoCapitalize='none'
+          autoCorrect={false}
           placeholder="Email"
           style={styles.input}
           keyboardType="email-address"
@@ -75,18 +94,20 @@ const SignupForm = () => {
           onChangeText={(text) => setFormData({ ...formData, email: text })}
         />
         {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
-
+        <Text style={styles.label}>Password</Text>
         <TextInput
-          placeholder="Password"
+          autoCapitalize='none'
+          autoCorrect={false}
           style={styles.input}
           secureTextEntry
           value={formData.password}
           onChangeText={(text) => setFormData({ ...formData, password: text })}
         />
         {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
-
+        <Text style={styles.label}>Confirm Password</Text>
         <TextInput
-          placeholder="Confirm Password"
+          autoCapitalize='none'
+          autoCorrect={false}
           style={styles.input}
           secureTextEntry
           value={formData.confirmPassword}
@@ -143,9 +164,13 @@ const styles = StyleSheet.create({
   },
   linkText: {
     marginTop: 20,
-    color: '#6200ea',
+    color: 'white',
     textAlign: 'center',
   },
+  label: {
+    color: '#ffffff',
+    marginVertical:5
+  }
 });
 
 export default SignupForm;

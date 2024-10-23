@@ -16,55 +16,61 @@ export default function BudgetSummary() {
   
   useEffect(()=> {
     const getData = async ()=> {
-      const response = await api.post('')
-      setBudgetItems(response.data)
+     // const response = await api.post('')
+     // setBudgetItems(response.data)
     }
 
     getData()
 
 }, [])
 
-  return (
-    <View style={styles.container}>
- <View style={styles.timeContainer}> <Text style={styles.header}>Budgets</Text> <Feather name="plus" style={styles.plusIconStyle}></Feather></View>
-  
-  <View style={styles.timeContainer}>
-    <TouchableOpacity>
-      <Feather name="arrow-left" style={styles.timeIcon} />
-    </TouchableOpacity>
-    <Text style={styles.header}>November 2024</Text>
-    <TouchableOpacity>
-      <Feather name="arrow-right" style={styles.timeIcon} />
-    </TouchableOpacity>
-  </View>
-  
-  <View style={styles.box}>
-    <View style={styles.row}>
-      <Text style={styles.summaryText}>Monthly Earnings: </Text> 
-      <Text style={styles.moneyText}>233$</Text>
+return (
+  <View style={styles.container}>
+    <View style={styles.timeContainer}>
+      <Text style={styles.header}>Budgets</Text>
+      <TouchableOpacity>
+        <Feather name="plus" style={styles.plusIconStyle} />
+      </TouchableOpacity>
     </View>
-    <View style={styles.row}>
-      <Text style={styles.summaryText}>Monthly Spendings: </Text> 
-      <Text style={styles.moneyText}>233$</Text>
-    </View>
-    <View style={styles.row}>
-      <Text style={styles.summaryText}>Total: </Text> 
-      <Text style={styles.moneyText}>233$</Text>
-    </View>
-    <View style={styles.row}>
-      <Text style={styles.summaryText}>Left to Spend: </Text> 
-      <Text style={styles.moneyText}>233$</Text>
-    </View>
-  </View>
-
-  <FlatList data={budgetItems} renderItem={({item})=> {
-    return (<BudgetListItem budgetItem={item} ></BudgetListItem>)
-  }}>
     
-  </FlatList>
-</View>
-
-  );
+    <View style={styles.timeContainer}>
+      <TouchableOpacity>
+        <Feather name="arrow-left" style={styles.timeIcon} />
+      </TouchableOpacity>
+      <Text style={styles.header}>November 2024</Text>
+      <TouchableOpacity>
+        <Feather name="arrow-right" style={styles.timeIcon} />
+      </TouchableOpacity>
+    </View>
+    
+    <View style={styles.box}>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Monthly Earnings: </Text>
+        <Text style={styles.moneyText}>233$</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Monthly Spendings: </Text>
+        <Text style={styles.moneyText}>233$</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Total: </Text>
+        <Text style={styles.moneyText}>233$</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Left to Spend: </Text>
+        <Text style={styles.moneyText}>233$</Text>
+      </View>
+    </View>
+    
+    <FlatList
+      data={budgetItems}
+      renderItem={({ item }) => (
+        <BudgetListItem budgetItem={item} />
+      )}
+      keyExtractor={(item, index) => index.toString()}
+    />
+  </View>
+);
 }
 
 const styles = StyleSheet.create({

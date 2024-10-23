@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useRouter, Link } from 'expo-router';
+import { authApi } from './api/api';
+import { setStorageValue } from './storage/storage';
+
+
+
 
 const LoginForm = () => {
   const router = useRouter();
@@ -18,6 +23,9 @@ const LoginForm = () => {
     password: '',
   });
 
+
+  
+
  
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,7 +33,7 @@ const LoginForm = () => {
   };
 
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = { username: '', password: '' };
 
     if (formData.username.trim() === '') {
@@ -40,11 +48,27 @@ const LoginForm = () => {
 
     if (newErrors.username || newErrors.password) {
       setErrors(newErrors);
+      return;
     } else {
       setErrors({ username: '', password: '' });
      
-      Alert.alert('Login Successful', `Welcome ${formData.username}`);
      
+    }
+    try{
+ 
+    const response = await authApi.login({username: formData.username,password: formData.password})
+    
+    const {accessToken,refreshToken} = response.data
+
+    setStorageValue("accessToken",accessToken)
+    
+    
+    setStorageValue("refreshToken",refreshToken)
+    router.push('/budgetPage')
+    }
+    catch(e) {
+      debugger
+      console.error("error",e)
     }
   };
 
@@ -52,18 +76,22 @@ const LoginForm = () => {
     <View style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.login}>Login Form</Text>
-
+        <Text style={styles.label}>Username</Text>
         <TextInput
-          placeholder="Username"
+          autoCorrect={false}
+          autoCapitalize='none'
+          
           style={styles.input}
           value={formData.username}
           onChangeText={(text) => setFormData({ ...formData, username: text })}
         />
         {errors.username ? <Text style={styles.errorText}>{errors.username}</Text> : null}
 
-
+        <Text style={styles.label}>Password</Text>
         <TextInput
-          placeholder="Password"
+          autoCorrect={false}
+          autoCapitalize='none'
+          
           style={styles.input}
           secureTextEntry
           value={formData.password}
@@ -99,7 +127,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#2c2c2c',
-    color: 'white',
+    color: '#ffffff',
     borderRadius: 5,
     borderWidth: 1,
     borderColor: '#444',
@@ -109,7 +137,7 @@ const styles = StyleSheet.create({
   login: {
     textAlign: 'center',
     fontSize: 24,
-    color: 'white',
+    color: '#ffffff',
     marginBottom: 20,
   },
   errorText: {
@@ -119,9 +147,13 @@ const styles = StyleSheet.create({
   },
   linkText: {
     marginTop: 20,
-    color: '#6200ea',
+    color: '#ffffff',
     textAlign: 'center',
   },
+  label: {
+    color: '#ffffff',
+    marginVertical:5
+  }
 });
 
 export default LoginForm;
