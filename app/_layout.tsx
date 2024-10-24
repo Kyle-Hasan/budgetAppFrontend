@@ -1,9 +1,11 @@
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
+import { AuthProvider } from "./context/AuthContext";
 
-export default function RootLayout() {
+export default function Root() {
+  // Set up the auth context and render our layout inside of it.
   return (
-    <Stack>
-      <Stack.Screen name="index" />
-    </Stack>
+    <AuthProvider>
+      <Slot />
+    </AuthProvider>
   );
 }

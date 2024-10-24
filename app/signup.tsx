@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { authApi } from './api/api';
-import { setStorageValue } from './storage/storage';
+import { AuthContext } from './context/AuthContext';
+
 const SignupForm = () => {
   const router = useRouter();
+  const authObj = useContext(AuthContext)
 
   const [formData, setFormData] = useState({
     username: '',
@@ -20,7 +22,7 @@ const SignupForm = () => {
     confirmPassword: '',
   });
 
-  // Basic email validation
+
   const validateEmail = async (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
@@ -59,8 +61,7 @@ const SignupForm = () => {
     try{
     const response = await authApi.signup({email:formData.email,username: formData.username, password: formData.password})
     const {refreshToken, accessToken} = response.data
-    setStorageValue("refreshToken",refreshToken)
-    setStorageValue("accessToken",accessToken)
+    authObj?.login({refreshToken,accessToken})
     router.push('/budgetPage')
 
     }

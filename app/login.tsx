@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { authApi } from './api/api';
-import { setStorageValue } from './storage/storage';
+import { AuthContext } from './context/AuthContext';
+
 
 
 
 
 const LoginForm = () => {
   const router = useRouter();
-
+  const authObj = useContext(AuthContext)
   
   const [formData, setFormData] = useState({
     username: '',
@@ -60,10 +61,7 @@ const LoginForm = () => {
     
     const {accessToken,refreshToken} = response.data
 
-    setStorageValue("accessToken",accessToken)
-    
-    
-    setStorageValue("refreshToken",refreshToken)
+    authObj?.login({accessToken,refreshToken})
     router.push('/budgetPage')
     }
     catch(e) {
