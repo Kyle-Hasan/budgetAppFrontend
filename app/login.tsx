@@ -60,12 +60,13 @@ const LoginForm = () => {
     const response = await authApi.login({username: formData.username,password: formData.password})
     
     const {accessToken,refreshToken} = response.data
-
+    
+   
     authObj?.login({accessToken,refreshToken})
     router.push('/budgetPage')
     }
     catch(e) {
-      debugger
+      
       console.error("error",e)
     }
   };

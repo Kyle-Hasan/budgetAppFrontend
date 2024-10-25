@@ -11,11 +11,9 @@ const api:AxiosInstance = axios.create({
     }
 })
 
-axios.interceptors.request.use( (config) => {
-    //add token logic
-    if(config.url && !config.url.includes('/login') && !config.url.includes('/signup') ) {
-    config.headers.Authorization = `Bearer ${getStorageValue('accessToken')}`
-    }
+
+api.interceptors.request.use(function (config) {
+    config.headers.Authorization = 'Bearer ' + getStorageValue("accessToken") 
     return config;
   }, function (error) {
    
@@ -23,17 +21,20 @@ axios.interceptors.request.use( (config) => {
   });
 
 
+
+
   const authApi = {
         login:(credentials: {username:string, password:string}) => {
-            return axios.post(baseURL+'/api/users/login',credentials,  {
+            return axios.post(baseURL+'/users/login',credentials,  {
                 headers: {
                     'Content-Type':'Application/json'
                 }
             })
+
         },
 
         signup:(signupData: {email:string, username:string, password:string}) => {
-            return axios.post(baseURL+'/api/users/signup',signupData,  {
+            return axios.post(baseURL+'/users/signup',signupData,  {
                 headers: {
                     'Content-Type':'Application/json'
                 }

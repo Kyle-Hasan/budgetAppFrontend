@@ -8,7 +8,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export interface budgetItem {
   name:string,
   currentSpent:number,
-  total:number
+  total:number,
+  id:number
 }
 
 interface budgetListItemProps {

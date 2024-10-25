@@ -1,5 +1,5 @@
-import React, {ReactNode,  useState} from 'react'
-import { setStorageValue } from '../storage/storage';
+import React, {ReactNode,  useState,useEffect} from 'react'
+import { getStorageValue, setStorageValue } from '../storage/storage';
 
     type AuthContextType = {
         isAuthenicated:boolean,
@@ -16,6 +16,18 @@ import { setStorageValue } from '../storage/storage';
         const [isAuthenicated,setIsAuthenicated] = useState<boolean>(false)
         const [accessToken,setAccessToken] = useState<string | null>()
         const [refreshToken,setRefreshToken] = useState<string | null>()
+
+         useEffect (()=> {
+            const aToken = getStorageValue("accessToken")
+            const rToken = getStorageValue("refreshToken")
+            if(aToken && rToken) {
+                setIsAuthenicated(true)
+                setAccessToken(aToken)
+                setRefreshToken(rToken)
+
+            }
+
+        })
 
 
         const logout = ()=> {

@@ -62,11 +62,12 @@ const SignupForm = () => {
     const response = await authApi.signup({email:formData.email,username: formData.username, password: formData.password})
     const {refreshToken, accessToken} = response.data
     authObj?.login({refreshToken,accessToken})
+
     router.push('/budgetPage')
 
     }
     catch(e) {
-      debugger
+      
       console.error("error",e)
     }
   };

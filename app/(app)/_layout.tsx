@@ -10,6 +10,8 @@ export default function AppLayout() {
 
 
   console.log("rerender")
+  
+  console.log(authObj)
   if (!authObj?.isAuthenicated) {
     
    

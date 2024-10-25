@@ -4,6 +4,12 @@ import { Feather } from "@expo/vector-icons";
 import BudgetListItem, { budgetItem } from "./budgets/BudgetListItem";
 import api from "@/app/api/api";
 
+interface budgetPageResponse {
+  budgetGoals: budgetItem[],
+  totalSpent:number,
+  totalDeposited:number
+
+}
 
 
 export default function BudgetSummary() {
@@ -11,13 +17,15 @@ export default function BudgetSummary() {
 
 
 
-  const [budgetItems,setBudgetItems] = useState<any>([])
+  const [budgetPageInfo,setBudgetPageInfo] = useState<budgetPageResponse>({budgetGoals:[],totalDeposited:0,totalSpent:0})
+  
 
   
   useEffect(()=> {
     const getData = async ()=> {
-     // const response = await api.post('')
-     // setBudgetItems(response.data)
+     const response = await api.get('/users/budgetScreen')
+     const data:budgetPageResponse  = response.data
+     setBudgetPageInfo(data)
     }
 
     getData()
@@ -45,12 +53,12 @@ return (
     
     <View style={styles.box}>
       <View style={styles.row}>
-        <Text style={styles.summaryText}>Monthly Earnings: </Text>
-        <Text style={styles.moneyText}>233$</Text>
+        <Text style={styles.summaryText}>Monthly Earnings:  </Text>
+        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
       </View>
       <View style={styles.row}>
-        <Text style={styles.summaryText}>Monthly Spendings: </Text>
-        <Text style={styles.moneyText}>233$</Text>
+        <Text style={styles.summaryText}>Monthly Spendings:  </Text>
+        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.summaryText}>Total: </Text>
@@ -63,7 +71,7 @@ return (
     </View>
     
     <FlatList
-      data={budgetItems}
+      data={budgetPageInfo.budgetGoals}
       renderItem={({ item }) => (
         <BudgetListItem budgetItem={item} />
       )}
