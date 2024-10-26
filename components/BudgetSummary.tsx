@@ -23,9 +23,14 @@ export default function BudgetSummary() {
   
   useEffect(()=> {
     const getData = async ()=> {
+    try{
      const response = await api.get('/users/budgetScreen')
      const data:budgetPageResponse  = response.data
      setBudgetPageInfo(data)
+    }
+    catch(error) {
+      console.log("error")
+    }
     }
 
     getData()
@@ -69,14 +74,16 @@ return (
         <Text style={styles.moneyText}>233$</Text>
       </View>
     </View>
-    
+  
     <FlatList
+      
       data={budgetPageInfo.budgetGoals}
       renderItem={({ item }) => (
         <BudgetListItem budgetItem={item} />
       )}
       keyExtractor={(item, index) => index.toString()}
     />
+   
   </View>
 );
 }
@@ -129,5 +136,10 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize:20,
     paddingTop:5
+  },
+  list: {
+    alignItems:'center',
+    width:'100%'
   }
+ 
 });
