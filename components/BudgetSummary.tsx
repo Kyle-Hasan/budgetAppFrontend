@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import BudgetListItem, { budgetItem } from "./budgets/BudgetListItem";
 import api from "@/app/api/api";
+
 
 interface budgetPageResponse {
   budgetGoals: budgetItem[],
@@ -13,6 +14,8 @@ interface budgetPageResponse {
 
 
 export default function BudgetSummary() {
+
+  
 
 
 
@@ -74,7 +77,7 @@ return (
         <Text style={styles.moneyText}>233$</Text>
       </View>
     </View>
-  
+    
     <FlatList
       
       data={budgetPageInfo.budgetGoals}
@@ -83,6 +86,7 @@ return (
       )}
       keyExtractor={(item, index) => index.toString()}
     />
+  
    
   </View>
 );
@@ -103,6 +107,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    flex:1
   },
   timeContainer: {
     flexDirection: "row",

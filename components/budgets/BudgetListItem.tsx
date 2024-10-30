@@ -3,13 +3,14 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import ProgressBar from './ProgressBar'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Href, useRouter } from 'expo-router';
 
 
 export interface budgetItem {
   name:string,
   currentSpent:number,
   total:number,
-  id:number
+  id:string
 }
 
 interface budgetListItemProps {
@@ -18,31 +19,51 @@ interface budgetListItemProps {
 
 
 const BudgetListItem = ({budgetItem}:budgetListItemProps) => {
-  const {name,currentSpent,total} = budgetItem
+  const router = useRouter();
+  const {name,currentSpent,total,id} = budgetItem
   const calculateTotal = Math.max(total,1)
   const percent = Math.min((currentSpent/(calculateTotal)*100),100)
+
+  const goToEdit = ()=> {
+    const str:string = `/budgets/${id}`
+    router.push(str as Href<string>);
+  }
   return (
-    <View style={styles.box}>
-      <View>
-        <View style={styles.topSection}>
-          <View style={styles.topSectionLeft}>
-          <Text style={styles.textStyle}>{name}</Text>
-          <View style={styles.progressBox}><Text style={styles.alignText}>${currentSpent}/${total}</Text></View>
-          </View>
-          <View style={styles.topSectionRight}>
-           <TouchableOpacity> <MaterialCommunityIcons name='pencil' style={styles.iconStyle}></MaterialCommunityIcons></TouchableOpacity>
-            <TouchableOpacity><MaterialCommunityIcons name='delete' style={styles.iconStyle}></MaterialCommunityIcons></TouchableOpacity>
-          </View>
-          </View>
-          <ProgressBar percentage={percent}></ProgressBar>
+     <View style={styles.box}>
+  <View>
+    <View style={styles.topSection}>
+      <View style={styles.topSection}>
+        <Text style={styles.textStyle}>{name}</Text>
+        <View style={styles.progressBox}>
+          <Text style={styles.alignText}>
+            ${currentSpent}/${total}
+          </Text>
+        </View>
       </View>
-     
     </View>
+    <ProgressBar percentage={percent} />
+    <View style={styles.buttonBar}>
+      <TouchableOpacity onPress={goToEdit}>
+        <MaterialCommunityIcons 
+          name='pencil' 
+          style={styles.iconStyle} 
+        />
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <MaterialCommunityIcons 
+          name='delete' 
+          style={styles.iconStyle} 
+        />
+      </TouchableOpacity>
+    </View>
+  </View>
+</View>
   );
 };
 
 const styles = StyleSheet.create({
   box: {
+    flex:1,
     backgroundColor: '#272727',
     borderRadius: 5,
     padding: 10,
@@ -56,18 +77,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     gap:10
   },
-  topSectionLeft: {
-    flexDirection: 'row',
-    alignItems:'flex-start',
-    flex: 1,
-    maxWidth:300,
-    gap:10
   
-  },
   textStyle: {
     color: "#ffffff",
     flex:1,
-    maxWidth:100,   
+      
     paddingTop: 5,
   },
   progressBox: {
@@ -75,12 +89,13 @@ const styles = StyleSheet.create({
     padding: 5,
     flex:1,           
     alignItems: 'center', 
-    maxWidth:200
+
    
   },
-  topSectionRight: {
+  buttonBar: {
     flexDirection: 'row',
     alignItems: 'center',  
+    marginVertical:5,
     gap: 10,
   },
   iconStyle: {
