@@ -9,9 +9,14 @@ export interface transaction {
     name: string,
     date: Date,
     amount:string,
-    id:string,
-    from?:string,
-    to?:string
+    id:number,
+    budget?:ParentEntity | null
+    account?:ParentEntity | null
+}
+
+interface ParentEntity {
+  id:number,
+  name:string
 }
 
 interface transctionProps {
