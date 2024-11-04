@@ -39,12 +39,8 @@ const Dropdown = ({labelName,items,keyName,defaultSelection,changeSelection}:dro
         setShow(false)
     }
     return (
-        <View style={styles.container} >
-           <TouchableOpacity style={styles.currentItem} onPress={toggleShow} > <Text style={styles.text}>{currentSelection ? currentSelection[labelName] : ""}</Text></TouchableOpacity>
-           <FlatList data={showItems} style={show? styles.listShow: styles.listHide} keyExtractor={(item)=> item[keyName].toString() } renderItem={({item})=> {
-                return <View style={styles.listItem}><TouchableOpacity onPress={()=> changeItem(item)}><Text style={styles.text}>{item[labelName]}</Text></TouchableOpacity></View>
-           }}/>
-        </View>
+        <View style={styles.container}><TouchableOpacity style={styles.currentItem} onPress={toggleShow} ><Text style={styles.text}>{currentSelection ? currentSelection[labelName] : ""}</Text></TouchableOpacity>
+        <FlatList data={showItems} style={show? styles.listShow: styles.listHide} keyExtractor={(item)=> item[keyName].toString() } renderItem={({item})=> { return <View style={styles.listItem}><TouchableOpacity onPress={()=> changeItem(item)}><Text style={styles.text}>{item[labelName]}</Text></TouchableOpacity></View>}}/></View>
     )
 }
 

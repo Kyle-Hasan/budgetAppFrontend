@@ -11,7 +11,8 @@ export interface transaction {
     amount:string,
     id:number,
     budget?:ParentEntity | null
-    account?:ParentEntity | null
+    account?:ParentEntity | null,
+    type?: string | null
 }
 
 interface ParentEntity {

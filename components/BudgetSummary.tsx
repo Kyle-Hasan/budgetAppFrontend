@@ -1,8 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import BudgetListItem, { budgetItem } from "./budgets/BudgetListItem";
 import api from "@/app/api/api";
+import { Href, useRouter } from "expo-router";
+import { FormContext } from "@/app/context/FormContex";
+import { budgetForm } from "./budgets/CreateBudgetForm";
 
 
 interface budgetPageResponse {
@@ -15,11 +18,10 @@ interface budgetPageResponse {
 
 export default function BudgetSummary() {
 
+  const router = useRouter()
+  const formContextObj = useContext(FormContext)
+
   
-
-
-
-
   const [budgetPageInfo,setBudgetPageInfo] = useState<budgetPageResponse>({budgetGoals:[],totalDeposited:0,totalSpent:0})
   
 
@@ -40,11 +42,19 @@ export default function BudgetSummary() {
 
 }, [])
 
+const goToBudgetCreate = ()=> {
+  const newForm:budgetForm  = {name:'',id:-1,transactions:[],amount:'0'}
+  formContextObj?.setBudgetForm(newForm)
+
+  router.push('/budgetFormModal' as Href<string>)
+
+}
+
 return (
   <View style={styles.container}>
     <View style={styles.timeContainer}>
       <Text style={styles.header}>Budgets</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={goToBudgetCreate}>
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
     </View>
