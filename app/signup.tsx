@@ -63,7 +63,7 @@ const SignupForm = () => {
     const {refreshToken, accessToken} = response.data
     authObj?.login({refreshToken,accessToken})
 
-    router.push('/budgetPage')
+    router.push('/budget')
 
     }
     catch(e) {

@@ -1,15 +1,11 @@
-import CreateBudgetForm, { budgetForm } from '@/components/budgets/CreateBudgetForm';
-import React, { useState } from 'react'
-
-
-
+// pages/BudgetPage.tsx
+import BudgetSummary from '@/components/BudgetSummary';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 
 const budgetPage = () => {
-
-   const [budgetForm,setBudgetForm] = useState<budgetForm>({name:'',amount:'12.2',id:'1',transactions: [{id:'1',name:'f',amount:'12.2',date:new Date()},{id:'2', name:'err',amount:'13.2',date:new Date()}]})
-  return (<View style={styles.container}><CreateBudgetForm budgetForm={budgetForm}></CreateBudgetForm></View>);
+  return (<View style={styles.container}><BudgetSummary></BudgetSummary></View>);
 };
 
 const styles = StyleSheet.create({

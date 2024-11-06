@@ -2,7 +2,7 @@ import TransactionForm from '@/components/transactions/transactionForm';
 import { Feather } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+
 
 export default function transactionFormModal() {
 
@@ -15,15 +15,17 @@ export default function transactionFormModal() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
     justifyContent: 'center',
+    
   },
   backContainer: {
-    backgroundColor: '#121212',
-    marginBottom:10,
+    
+    marginTop:50,
     marginLeft:20
    
   },

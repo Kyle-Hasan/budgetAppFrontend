@@ -1,38 +1,46 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import BudgetListItem, { budgetItem } from "./budgets/BudgetListItem";
+
 import api from "@/app/api/api";
 import { Href, useRouter } from "expo-router";
 import { FormContext } from "@/app/context/FormContex";
 import { budgetForm } from "@/app/(app)/(tabs)/CreateBudgetForm";
+import AccountListItem from "./AccountListItem";
+import { accountForm } from "./AccountForm";
 
 
 
-interface budgetPageResponse {
-  budgetGoals: budgetItem[],
-  totalSpent:number,
-  totalDeposited:number
+export interface AccountItem {
+  id:number,
+  name:string,
+  currentAccountBalance:number,
+  amountDeposited:number
+  
+
 
 }
 
+interface AccountPageInfo {
+  accounts: AccountItem[]
+}
 
-export default function BudgetSummary() {
+export default function AccountSummary() {
 
   const router = useRouter()
   const formContextObj = useContext(FormContext)
 
   
-  const [budgetPageInfo,setBudgetPageInfo] = useState<budgetPageResponse>({budgetGoals:[],totalDeposited:0,totalSpent:0})
+  const [accountPageInfo,setAccountPageInfo] = useState<AccountPageInfo>({accounts:[]})
   
 
   
   useEffect(()=> {
     const getData = async ()=> {
     try{
-     const response = await api.get('/users/budgetScreen')
-     const data:budgetPageResponse  = response.data
-     setBudgetPageInfo(data)
+     const response = await api.get('/accounts/userAccounts')
+     const data:any  = response.data
+     setAccountPageInfo({...accountPageInfo,accounts:data})
     }
     catch(error) {
       console.log("error")
@@ -43,19 +51,19 @@ export default function BudgetSummary() {
 
 }, [])
 
-const goToBudgetCreate = ()=> {
-  const newForm:budgetForm  = {name:'',id:-1,transactions:[],amount:'0'}
-  formContextObj?.setBudgetForm(newForm)
+const goToAccountCreate = ()=> {
+  const newForm:accountForm  = {name:'',id:-1,transactions:[],startingBalance:'0'}
+  formContextObj?.setAccountForm(newForm)
 
-  router.push('/budgetFormModal' as Href<string>)
+  router.push('/accountFormModal' as Href<string>)
 
 }
 
 return (
   <View style={styles.container}>
     <View style={styles.timeContainer}>
-      <Text style={styles.header}>Budgets</Text>
-      <TouchableOpacity onPress={goToBudgetCreate}>
+      <Text style={styles.header}>Accounts</Text>
+      <TouchableOpacity onPress={goToAccountCreate}>
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
     </View>
@@ -70,30 +78,13 @@ return (
       </TouchableOpacity>
     </View>
     
-    <View style={styles.box}>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Monthly Earnings:  </Text>
-        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Monthly Spendings:  </Text>
-        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Total: </Text>
-        <Text style={styles.moneyText}>233$</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Left to Spend: </Text>
-        <Text style={styles.moneyText}>233$</Text>
-      </View>
-    </View>
+   
     
     <FlatList
       
-      data={budgetPageInfo.budgetGoals}
+      data={accountPageInfo.accounts}
       renderItem={({ item }) => (
-        <BudgetListItem budgetItem={item} />
+        <AccountListItem accountItem={item} />
       )}
       keyExtractor={(item, index) => index.toString()}
     />

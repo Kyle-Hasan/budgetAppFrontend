@@ -1,12 +1,16 @@
-import { budgetForm } from "@/components/budgets/CreateBudgetForm"
+
 import { transaction } from "@/components/transactions/transactionItemChild"
 import React, { ReactNode } from "react";
 import { useState} from "react";
+import { budgetForm } from "../(app)/(tabs)/CreateBudgetForm";
+import { accountForm } from "@/components/accounts/AccountForm";
 type FormContextType = {
     transactionForm: transaction | null,
     budgetForm: budgetForm | null,
     setTransactionForm: Function,
-    setBudgetForm:Function
+    setBudgetForm:Function,
+    accountForm: accountForm | null,
+    setAccountForm:Function
 
 
 
@@ -18,8 +22,9 @@ const FormProvider = ({ children }: { children: ReactNode })=> {
 
     const [transactionForm,setTransactionForm] = useState<transaction | null>(null)
     const [budgetForm, setBudgetForm] = useState<budgetForm | null>(null);
+    const [accountForm,setAccountForm] = useState<accountForm | null>(null)
     
-    return <FormContext.Provider value={{transactionForm,setBudgetForm,budgetForm,setTransactionForm}}>{children}</FormContext.Provider>
+    return <FormContext.Provider value={{transactionForm,setBudgetForm,budgetForm,setTransactionForm,accountForm,setAccountForm}}>{children}</FormContext.Provider>
 }
 
 export {FormProvider,FormContext}

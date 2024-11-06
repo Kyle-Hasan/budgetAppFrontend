@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text,View,TextInput, StyleSheet, TouchableOpacity } from "react-native";
-import { FlatList } from "react-native-gesture-handler";
+import { Text,View,TextInput, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+
 interface dropdownProps {
     items: any[],
     labelName: string,
@@ -40,15 +40,20 @@ const Dropdown = ({labelName,items,keyName,defaultSelection,changeSelection}:dro
     }
     return (
         <View style={styles.container}><TouchableOpacity style={styles.currentItem} onPress={toggleShow} ><Text style={styles.text}>{currentSelection ? currentSelection[labelName] : ""}</Text></TouchableOpacity>
-        <FlatList data={showItems} style={show? styles.listShow: styles.listHide} keyExtractor={(item)=> item[keyName].toString() } renderItem={({item})=> { return <View style={styles.listItem}><TouchableOpacity onPress={()=> changeItem(item)}><Text style={styles.text}>{item[labelName]}</Text></TouchableOpacity></View>}}/></View>
+        { show ? (<FlatList data={showItems} style={styles.listShow} keyExtractor={(item)=> item[keyName].toString() } renderItem={({item})=> { return <View style={styles.listItem}><TouchableOpacity onPress={()=> changeItem(item)}><Text style={styles.text}>{item[labelName]}</Text></TouchableOpacity></View>}}/> ) : null}
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+        borderWidth:1,
+        borderColor:'red',
         
-        flex:1,
         minWidth:200,
+       
+        maxHeight:200
+        
         
         
 

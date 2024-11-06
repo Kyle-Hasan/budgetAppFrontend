@@ -63,7 +63,7 @@ const LoginForm = () => {
     
    
     authObj?.login({accessToken,refreshToken})
-    router.push('/budgetPage')
+    router.push('/budget')
     }
     catch(e) {
       

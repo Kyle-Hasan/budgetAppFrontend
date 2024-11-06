@@ -1,8 +1,11 @@
-import { Text } from 'react-native';
-import { Redirect, Stack } from 'expo-router';
+import { Text, View } from 'react-native';
+import { Redirect, Stack, Tabs } from 'expo-router';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { FontAwesome } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 
 
 
@@ -22,9 +25,17 @@ export default function AppLayout() {
   
 
   
-  return <Stack screenOptions={{headerShown:false}}>
-    <StatusBar hidden={true} backgroundColor="transparent" translucent={true} />
-    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+  return <GestureHandlerRootView>
+    <StatusBar style="light"></StatusBar>
+    <Stack screenOptions={{headerShown:false}}>
+    <Stack.Screen name="(tabs)"/>
+    <Stack.Screen
+        name="accountFormModal"
+        options={{
+          presentation: 'modal',
+        }}
+      />
+
     <Stack.Screen
         name="budgetFormModal"
         options={{
@@ -37,5 +48,6 @@ export default function AppLayout() {
           presentation: 'modal',
         }}
       />
-  </Stack>;
+  </Stack>
+  </GestureHandlerRootView>;
 }

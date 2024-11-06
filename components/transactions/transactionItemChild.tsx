@@ -39,7 +39,7 @@ const TransactionItemChild = ({transaction}:transctionProps)=> {
             ${transaction.amount}
           </Text>
         </View>
-    <View style={styles.topSection}><Text style={styles.textStyle}>{Moment(transaction.date).format('d MMM')}</Text></View>
+    <View style={styles.topSection}><Text style={styles.textStyle}>{Moment(transaction.date).format('d MMMM Y')}</Text><Text style={styles.whiteText}>{transaction.type}</Text></View>
     <View style={styles.buttonBar}>
       <TouchableOpacity onPress={editNavigate}>
         <MaterialCommunityIcons 
@@ -75,12 +75,14 @@ const styles = StyleSheet.create({
     },
     topSection: {
       flexDirection: 'row',
-      alignItems: 'center',  
-      justifyContent:'center',
+      alignItems: 'flex-start',  
+      justifyContent: 'space-between',
       marginBottom: 10,
-      gap:10
+      width:'100%'
     },
-    
+    whiteText: {
+      color: "#ffffff",
+    },
     textStyle: {
       color: "#ffffff",
       flex:1,

@@ -1,18 +1,14 @@
 // components/BudgetListItem.tsx
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, FlatList, ScrollView } from 'react-native';
 
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 
-import { transaction } from '../transactions/transactionItemChild';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-
-
-import TransactionItemChild from '../transactions/transactionItemChild'
 import { Href, useRouter } from 'expo-router';
 import { setStorageValue } from '@/app/storage/storage';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
+import TransactionItemChild, { transaction } from '@/components/transactions/transactionItemChild';
 
 
 export interface budgetForm {
@@ -56,7 +52,7 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
     useEffect(()=> {
       console.log(" trigger use effect ")
       if(formContextObj?.transactionForm?.id == -1 && formContextObj?.transactionForm?.name) {
-        debugger
+      
         const newTransactions = [...formData.transactions,formContextObj?.transactionForm]
         console.log("new transactions", newTransactions)
         setFormData({...formData,transactions:newTransactions})
@@ -77,7 +73,7 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
       console.log("form data is  ",formData)
         const body = {...formData,amount:+formData.amount}
         let response:any
-        debugger
+        
         console.log("form data pre check",formData.id)
         if(formData.id && formData.id !== -1) {
             response = await api.patch("/budgets",body)
@@ -107,7 +103,7 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
   
   return (
      <View style={styles.container}>
-      <ScrollView>
+      
         <Text style={styles.title} >Budget Form</Text>
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -125,19 +121,22 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
           value={formData.amount}
           onChangeText={(text) => setFormData({ ...formData, amount: text.replace(/[^0-9]/g, '')})}/>
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
-    <View style={{flexGrow:0}}>
+    { formData.transactions && formData.transactions.length > 0 &&
+    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10, borderColor:'red',borderWidth:1,minWidth:200}}>
+      
     <FlatList
-    ListEmptyComponent={()=> <View style={styles.emptyTransactions} />}
-    contentContainerStyle={{flexGrow:0}}
+     ListEmptyComponent={() => <View style={{ height: 0}} />}
+    contentContainerStyle={{ }}
     keyExtractor={(item,index)=> index.toString()}
     renderItem={({ item }) => (
         <TransactionItemChild transaction={item} />
       )}
     data={formData.transactions}>
     </FlatList>
-    </View>
+    </View>)}
     <Button title="Submit" onPress={handleSubmit} color="#6200ea" />
-    </ScrollView>
+   
+   
     </View>
   );
 };
@@ -167,6 +166,7 @@ const styles = StyleSheet.create({
       borderColor: '#444',
       padding: 10,
       marginVertical: 10,
+      minWidth:200
     },
     title: {
       textAlign: 'center',

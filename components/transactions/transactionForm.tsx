@@ -1,9 +1,9 @@
 
 import React, { useEffect, useState } from "react";
-import {Platform, View, StyleSheet,Text, Button  } from "react-native";
+import {Platform, View, StyleSheet,Text, Button, TextInput   } from "react-native";
 import { transaction } from "./transactionItemChild";
 
-import { TextInput } from "react-native-gesture-handler";
+
 import Dropdown from "../Dropdown";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import './datePicker.css'
@@ -77,6 +77,10 @@ import { useRouter } from "expo-router";
           try{
           let response = await api.get('/accounts/accountSelections')
           setAccounts(response.data)
+
+          if(formContextObj?.accountForm?.id === -1) {
+            setAccounts([...accounts as any[],{name:formContextObj.accountForm.name,id:formContextObj.accountForm.id}])
+          }
           }
           catch(e) {
 
@@ -95,7 +99,7 @@ import { useRouter } from "expo-router";
         // dont make api request for budget still being made
         console.log(formContextObj)
         const getType = transaction.type ? transaction.type: defaultType?.label.toUpperCase()
-        if(formContextObj?.budgetForm?.id !== -1) {
+        if(formContextObj?.budgetForm?.id !== -1 && formContextObj?.accountForm?.id !== -1) {
         console.log(transaction)
         
         const body = {...transaction, amount: +transaction.amount, type: getType}
@@ -146,15 +150,13 @@ import { useRouter } from "expo-router";
 
 
     return (<View style={styles.container}>
-            <Text style={styles.title}>Transaction Form</Text>
+            <Text style={styles.title}>Transaction 2Form</Text>
             <Text style={styles.label} >Name</Text>
             <TextInput style={styles.input} value={transaction.name} onChangeText={(text) => setFormData('name',text)}></TextInput>
             <Text style={styles.label}>Amount</Text>
             <TextInput style={styles.input}  value={transaction.amount} onChangeText={(text) => setFormData('amount',text.replace(/[^0-9]/g, ''))}></TextInput>
             <Text style={styles.label}>Date</Text>
-           {Platform.OS === 'web' ?  
-           (<DatePicker onChange={(date)=>{setFormData('date',date)}} className="custom-datepicker"  value={"2022-01-12"}></DatePicker>):(<DateTimePicker onChange={(date)=>{setFormData('date',date)}}  style={styles.input} value={new Date()}/>)
-          }
+           
       {budgets && (<View style={styles.budgetDropdown}><Text style={styles.label}>Budget</Text><Dropdown changeSelection={budgetChanged} defaultSelection={transaction?.budget} items={budgets} keyName="id" labelName="name" ></Dropdown></View>) }
       {accounts && (<View style={styles.accountDropdown}><Text style={styles.label}>Account</Text><Dropdown changeSelection={accountChanged} defaultSelection={transaction?.account} items={accounts} keyName="id" labelName="name" ></Dropdown></View>) }
       {defaultType && (<View style={styles.typeDropdown}><Text style={styles.label}>Transaction Type</Text><Dropdown changeSelection={typeChanged} defaultSelection={types[0]} items={types} keyName="label" labelName="label" ></Dropdown></View>)}
@@ -191,6 +193,7 @@ const styles = StyleSheet.create({
       borderColor: '#444',
       padding: 10,
       marginVertical: 10,
+      minWidth:200
     },
     title: {
       textAlign: 'center',
@@ -224,22 +227,28 @@ const styles = StyleSheet.create({
       },
 
       dropdown: {
-        marginBottom:10,
+        marginBottom:0,
         zIndex:5,
       },
 
       budgetDropdown: {
         marginBottom:10,
         zIndex:201,
+        
+        flexShrink:1
       },
 
       accountDropdown: {
         marginBottom:10,
         zIndex:200,
+        
+        flexShrink:1
       },
       typeDropdown: {
         marginBottom:10,
         zIndex:199,
+       
+        flexShrink:1
       }
 
 
