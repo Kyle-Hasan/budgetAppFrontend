@@ -1,5 +1,5 @@
 // pages/BudgetPage.tsx
-import BudgetSummary from '@/components/BudgetSummary';
+import BudgetSummary from '@/components/budgets/BudgetSummary';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 

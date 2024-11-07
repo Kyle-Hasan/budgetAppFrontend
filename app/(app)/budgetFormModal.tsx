@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { FormContext } from '../context/FormContex';
 import { Link, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import CreateBudgetForm, {budgetForm} from './(tabs)/CreateBudgetForm';
+import CreateBudgetForm, {budgetForm} from '../../components/budgets/CreateBudgetForm';
 
 export default function budgetFormModal() {
   const isPresented = router.canGoBack()

@@ -1,11 +1,12 @@
 // pages/BudgetPage.tsx
-import BudgetSummary from '@/components/BudgetSummary';
+import BudgetSummary from '@/components/budgets/BudgetSummary';
+import TransactionSummary from '@/components/transactions/transactionsSummary';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 
-const budgetPage = () => {
-  return (<View style={styles.container}><BudgetSummary></BudgetSummary></View>);
+const transactionPage = () => {
+  return (<View style={styles.container}><TransactionSummary></TransactionSummary></View>);
 };
 
 const styles = StyleSheet.create({
@@ -35,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default budgetPage;
+export default transactionPage;

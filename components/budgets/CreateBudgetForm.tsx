@@ -2,13 +2,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, FlatList, ScrollView } from 'react-native';
 
-import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 
 import { Href, useRouter } from 'expo-router';
-import { setStorageValue } from '@/app/storage/storage';
+
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
 import TransactionItemChild, { transaction } from '@/components/transactions/transactionItemChild';
+import { useToastController} from '@tamagui/toast';
+
+import CurrentToast from '@/components/CurrentToast';
+import SpinnerComponent from '../Spinner';
 
 
 export interface budgetForm {
@@ -22,14 +26,19 @@ interface budgetFormProps {
     budgetForm:budgetForm
 }
 
+
+
 const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
+
+    const toast = useToastController();
+    const [loading,setLoading] = useState(false)
 
     const router = useRouter()
     const formContextObj = useContext(FormContext)
 
 
     const [formData,setFormData] = useState<budgetForm>(budgetForm)
-    console.log("form data render", formData)
+  //  console.log("form data render", formData)
 
 
     const navigateToTransactionForm = ()=> {
@@ -70,6 +79,7 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
 
     const handleSubmit = async() => {
       try{
+      setLoading(true)
       console.log("form data is  ",formData)
         const body = {...formData,amount:+formData.amount}
         let response:any
@@ -87,14 +97,34 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
          
         }
 
+        
+
         setFormData(response.data)
         console.log(" form data is  " , formData)
         console.log(" response is " , response.data)
         formContextObj?.setBudgetForm(response.data)
         console.log("budget form context", formContextObj)
+        toast.show('Successfully saved!', {
+          message: "Budget Saved",
+          native:false,
+          customData: {
+            color:'green'
+          }
+          
+        })
+        setLoading(false)
       }
       catch(e) {
+        toast.show('Failed', {
+          message: "Failure",
+          native:false,
+          customData: {
+            color:'red'
+          }
+        
+        })
         console.log(e)
+        setLoading(false)
       }
 
     }
@@ -134,9 +164,9 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
     data={formData.transactions}>
     </FlatList>
     </View>)}
-    <Button title="Submit" onPress={handleSubmit} color="#6200ea" />
-   
-   
+    <Button title="Submit" onPress={handleSubmit} color="#6200ea" disabled={loading} />
+    <SpinnerComponent show={loading}></SpinnerComponent>
+    <CurrentToast />
     </View>
   );
 };

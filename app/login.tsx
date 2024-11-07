@@ -3,6 +3,10 @@ import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { authApi } from './api/api';
 import { AuthContext } from './context/AuthContext';
+import { InputsDemo } from '@/components/InputsDemo';
+import { useToastController } from '@tamagui/toast';
+import CurrentToast from '@/components/CurrentToast';
+import SpinnerComponent from '@/components/Spinner';
 
 
 
@@ -11,6 +15,10 @@ import { AuthContext } from './context/AuthContext';
 const LoginForm = () => {
   const router = useRouter();
   const authObj = useContext(AuthContext)
+  const [loading,setLoading] = useState(false)
+
+  const toast = useToastController();
+
   
   const [formData, setFormData] = useState({
     username: '',
@@ -24,10 +32,6 @@ const LoginForm = () => {
     password: '',
   });
 
-
-  
-
- 
   const validateEmail = (email: string) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
@@ -35,6 +39,7 @@ const LoginForm = () => {
 
 
   const handleSubmit = async () => {
+    setLoading(true)
     const newErrors = { username: '', password: '' };
 
     if (formData.username.trim() === '') {
@@ -63,11 +68,22 @@ const LoginForm = () => {
     
    
     authObj?.login({accessToken,refreshToken})
+    
+    setLoading(false)
     router.push('/budget')
     }
+    
     catch(e) {
-      
+      setLoading(false)
       console.error("error",e)
+      toast.show('Failed', {
+        message: "Login failed, try again",
+        native:false,
+        customData: {
+          color:'red'
+        }
+      
+      })
     }
   };
 
@@ -98,12 +114,14 @@ const LoginForm = () => {
         />
         {errors.password ? <Text style={styles.errorText}>{errors.password}</Text> : null}
 
-        <Button title="Submit" onPress={handleSubmit} color="#6200ea" />
+        <Button title="Submit" onPress={handleSubmit} color="#6200ea" disabled={loading} />
+        <SpinnerComponent show={loading}/>
 
         <Link href="/signup" style={styles.linkText}>
           Go to signup
         </Link>
       </View>
+      <CurrentToast />
     </View>
   );
 };
@@ -156,3 +174,4 @@ const styles = StyleSheet.create({
 });
 
 export default LoginForm;
+

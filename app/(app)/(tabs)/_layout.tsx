@@ -39,11 +39,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="CreateBudgetForm"
+        name="transaction"
+        
         options={{
-          href: null,
+          headerShown:false,
+          title: "Transactions",
+          tabBarIcon: ({ color, focused }) => (
+            <FontAwesome6 name="money-bill-transfer" size={24} color="white" />
+          ),
         }}
       />
+      
       <Tabs.Screen
       
         name="budgets/[id]"

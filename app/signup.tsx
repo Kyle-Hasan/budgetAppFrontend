@@ -3,10 +3,15 @@ import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { authApi } from './api/api';
 import { AuthContext } from './context/AuthContext';
+import CurrentToast from '@/components/CurrentToast';
+import { useToastController } from '@tamagui/toast';
+import SpinnerComponent from '@/components/Spinner';
 
 const SignupForm = () => {
   const router = useRouter();
   const authObj = useContext(AuthContext)
+  const toast = useToastController();
+  const [loading,setLoading] = useState(false)
 
   const [formData, setFormData] = useState({
     username: '',
@@ -29,6 +34,7 @@ const SignupForm = () => {
   };
 
   const handleSubmit = async() => {
+    setLoading(true)
     const newErrors = { username: '', email: '', password: '', confirmPassword: '' };
 
     if (formData.username.trim() === '') {
@@ -51,17 +57,16 @@ const SignupForm = () => {
       setErrors(newErrors);
     } else {
       setErrors({ username: '', email: '', password: '', confirmPassword: '' });
-
-
-     
-     
-      Alert.alert('Sign Up Successful', `Welcome ${formData.username}`);
+    
+      
       router.push('/login'); 
+      setLoading(false)
     }
     try{
     const response = await authApi.signup({email:formData.email,username: formData.username, password: formData.password})
     const {refreshToken, accessToken} = response.data
     authObj?.login({refreshToken,accessToken})
+    setLoading(false)
 
     router.push('/budget')
 
@@ -69,6 +74,14 @@ const SignupForm = () => {
     catch(e) {
       
       console.error("error",e)
+      toast.show('Failed', {
+        message: "Signup failed, try again",
+        native:false,
+        customData: {
+          color:'red'
+        }
+      
+      })
     }
   };
 
@@ -117,12 +130,13 @@ const SignupForm = () => {
         />
         {errors.confirmPassword ? <Text style={styles.errorText}>{errors.confirmPassword}</Text> : null}
 
-        <Button title="Submit" onPress={handleSubmit} color="#6200ea" />
-
+        <Button title="Submit" onPress={handleSubmit} color="#6200ea" disabled={loading} />
+        <SpinnerComponent show={loading}/>
         {/* Link to Login Page */}
         <Link href="/login" style={styles.linkText}>
           Already have an account? Go to Login
         </Link>
+        <CurrentToast />
       </View>
     </View>
   );

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 
 
 import { View, StyleSheet } from 'react-native';
-import CreateBudgetForm, {budgetForm} from '../CreateBudgetForm'
+import CreateBudgetForm, {budgetForm} from '../../../../components/budgets/CreateBudgetForm'
 
 
 const budgetPage = () => {

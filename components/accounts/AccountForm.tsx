@@ -9,6 +9,9 @@ import { Href, useRouter } from 'expo-router';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
 import TransactionItemChild, { transaction } from '@/components/transactions/transactionItemChild';
+import { useToastController } from '@tamagui/toast';
+import CurrentToast from '../CurrentToast';
+import SpinnerComponent from '../Spinner';
 
 
 export interface accountForm {
@@ -24,8 +27,11 @@ interface accountFormProps {
 
 const CreateAmountForm = ({accountForm}:accountFormProps) => {
 
+
+    const toast = useToastController();
     const router = useRouter()
     const formContextObj = useContext(FormContext)
+    const [loading,setLoading] = useState(false)
 
 
     const [formData,setFormData] = useState<accountForm>(accountForm)
@@ -71,6 +77,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
 
     const handleSubmit = async() => {
       try{
+      setLoading(true)
       console.log("form data is  ",formData)
         const body = {...formData,startingBalance:+formData.startingBalance}
         let response:any
@@ -91,10 +98,27 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
         setFormData(response.data)
      
         formContextObj?.setAccountForm(response.data)
-        
+
+        toast.show('Successfully saved!', {
+          message: "Budget Saved",
+          native:false,
+          customData: {
+            color:'green'
+          }
+          
+        })
+        setLoading(false)
       }
       catch(e) {
+        toast.show('Failed', {
+          message: "Failure",
+          native:false,
+          customData: {
+            color:'red'
+          }
+        })
         console.log(e)
+        setLoading(false)
       }
 
     }
@@ -134,10 +158,12 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
     data={formData.transactions}>
     </FlatList>
     </View>)}
-    <Button title="Submit" onPress={handleSubmit} color="#6200ea" />
+    <Button title="Submit" onPress={handleSubmit} color="#6200ea" disabled={loading} />
+    <SpinnerComponent show={loading}></SpinnerComponent>
    
-   
+   <CurrentToast></CurrentToast>
     </View>
+
   );
 };
 

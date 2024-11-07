@@ -4,7 +4,7 @@ import React from 'react';
 
 export default function Index() {
   return (
-    <Redirect href={"/(app)/budgetPage"}></Redirect>
+    <Redirect href={"/(app)/(tabs)/budget"}></Redirect>
   );
 }
 

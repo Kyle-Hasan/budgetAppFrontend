@@ -13,9 +13,14 @@ import DatePicker from 'react-datepicker'; // For web
 import api from "@/app/api/api";
 import { FormContext } from "@/app/context/FormContex";
 import { useRouter } from "expo-router";
+import { useToastController } from "@tamagui/toast";
+import CurrentToast from "../CurrentToast";
+import SpinnerComponent from "../Spinner";
 
 
  const TransactionForm = ()=> {
+  const toast = useToastController();
+  const [loading,setLoading] = useState(false)
   const types = [{
      
     label:'Income'
@@ -96,6 +101,7 @@ import { useRouter } from "expo-router";
 
     const submit = async()=>{
       try {
+        setLoading(true)
         // dont make api request for budget still being made
         console.log(formContextObj)
         const getType = transaction.type ? transaction.type: defaultType?.label.toUpperCase()
@@ -115,10 +121,20 @@ import { useRouter } from "expo-router";
         setTransaction(response.data)
         formContextObj?.setTransactionForm(transaction)
         console.log("updated")
+        toast.show('Successfully saved!', {
+          message: "Transaction Saved",
+          native:false,
+          customData: {
+            color:'green'
+          }
+          
+        })
+        setLoading(false)
       }
 
       else {
         formContextObj?.setTransactionForm({...transaction,type:getType})
+        setLoading(false)
         router.back()
       }
 
@@ -126,7 +142,14 @@ import { useRouter } from "expo-router";
       }
 
       catch(e) {
-
+        toast.show('Failed', {
+          message: "Failure",
+          native:false,
+          customData: {
+            color:'red'
+          }
+        })
+        setLoading(false)
       }
 
     }
@@ -150,7 +173,7 @@ import { useRouter } from "expo-router";
 
 
     return (<View style={styles.container}>
-            <Text style={styles.title}>Transaction 2Form</Text>
+            <Text style={styles.title}>Transaction Form</Text>
             <Text style={styles.label} >Name</Text>
             <TextInput style={styles.input} value={transaction.name} onChangeText={(text) => setFormData('name',text)}></TextInput>
             <Text style={styles.label}>Amount</Text>
@@ -160,7 +183,9 @@ import { useRouter } from "expo-router";
       {budgets && (<View style={styles.budgetDropdown}><Text style={styles.label}>Budget</Text><Dropdown changeSelection={budgetChanged} defaultSelection={transaction?.budget} items={budgets} keyName="id" labelName="name" ></Dropdown></View>) }
       {accounts && (<View style={styles.accountDropdown}><Text style={styles.label}>Account</Text><Dropdown changeSelection={accountChanged} defaultSelection={transaction?.account} items={accounts} keyName="id" labelName="name" ></Dropdown></View>) }
       {defaultType && (<View style={styles.typeDropdown}><Text style={styles.label}>Transaction Type</Text><Dropdown changeSelection={typeChanged} defaultSelection={types[0]} items={types} keyName="label" labelName="label" ></Dropdown></View>)}
-      <Button title="Submit" onPress={submit} color="#6200ea"></Button>
+      <Button title="Submit" onPress={submit} color="#6200ea" disabled={loading}></Button>
+      <SpinnerComponent show={loading}></SpinnerComponent>
+      <CurrentToast></CurrentToast>
     </View>)
 
 }

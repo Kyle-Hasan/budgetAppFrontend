@@ -1,49 +1,31 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 
 import api from "@/app/api/api";
 import { Href, useRouter } from "expo-router";
 import { FormContext } from "@/app/context/FormContex";
-import { budgetForm } from "@/components/budgets/CreateBudgetForm";
-import AccountListItem from "./AccountListItem";
-import { accountForm } from "./AccountForm";
 import SpinnerComponent from "../Spinner";
+import TransactionItemChild, { transaction } from "./transactionItemChild";
 
-
-
-export interface AccountItem {
-  id:number,
-  name:string,
-  currentAccountBalance:number,
-  amountDeposited:number
-  
-
-
-}
-
-interface AccountPageInfo {
-  accounts: AccountItem[]
-}
-
-export default function AccountSummary() {
+export default function TransactionSummary() {
 
   const router = useRouter()
   const formContextObj = useContext(FormContext)
   const [loading,setLoading] = useState(false)
 
   
-  const [accountPageInfo,setAccountPageInfo] = useState<AccountPageInfo>({accounts:[]})
+  const [transactions,setTransactions] = useState<transaction[]>([])
   
 
   
   useEffect(()=> {
     const getData = async ()=> {
+    setLoading(true)
     try{
-     setLoading(true)
-     const response = await api.get('/accounts/userAccounts')
-     const data:any  = response.data
-     setAccountPageInfo({...accountPageInfo,accounts:data})
+     const response = await api.get('/transactions/userTransactions')
+     const data  = response.data
+     setTransactions(data)
      setLoading(false)
     }
     catch(error) {
@@ -56,11 +38,11 @@ export default function AccountSummary() {
 
 }, [])
 
-const goToAccountCreate = ()=> {
-  const newForm:accountForm  = {name:'',id:-1,transactions:[],startingBalance:'0'}
-  formContextObj?.setAccountForm(newForm)
+const goToTransactionCreate = ()=> {
+  const newForm:transaction  = {name:'',id:-1,date:new Date(),amount:'',account:null,budget:null,type:'EXPENSE'}
+  formContextObj?.setTransactionForm(newForm)
 
-  router.push('/accountFormModal' as Href<string>)
+  router.push('/transactionFormModal' as Href<string>)
 
 }
 
@@ -68,34 +50,18 @@ return (
   !loading ?
   (<View style={styles.container}>
     <View style={styles.timeContainer}>
-      <Text style={styles.header}>Accounts</Text>
-      <TouchableOpacity onPress={goToAccountCreate}>
+      <Text style={styles.header}>Transactions</Text>
+      <TouchableOpacity onPress={goToTransactionCreate}>
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
     </View>
-    
-    <View style={styles.timeContainer}>
-      <TouchableOpacity>
-        <Feather name="arrow-left" style={styles.timeIcon} />
-      </TouchableOpacity>
-      <Text style={styles.header}>November 2024</Text>
-      <TouchableOpacity>
-        <Feather name="arrow-right" style={styles.timeIcon} />
-      </TouchableOpacity>
-    </View>
-    
-   
-    
     <FlatList
-      
-      data={accountPageInfo.accounts}
+      data={transactions}
       renderItem={({ item }) => (
-        <AccountListItem accountItem={item} />
+        <TransactionItemChild transaction={item} />
       )}
       keyExtractor={(item, index) => index.toString()}
     />
-  
-   
   </View>):
   (<SpinnerComponent show={loading}/>)
 );
