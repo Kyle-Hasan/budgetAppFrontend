@@ -4,25 +4,27 @@ import React, { useContext, useEffect, useState } from 'react'
 
 
 import { View, StyleSheet } from 'react-native';
-import CreateBudgetForm, {budgetForm} from '../../../../components/budgets/CreateBudgetForm'
+
 import { useGlobalSearchParams } from 'expo-router';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
+import { transaction } from '@/components/transactions/transactionItemChild';
+import TransactionForm from "@/components/transactions/transactionForm"
 
-
-const budgetPage = () => {
+const transactionPage = () => {
   const glob = useGlobalSearchParams();
   const formContextObj = useContext(FormContext)
-  const [budgetForm,setBudgetForm] = useState<budgetForm | null>(null)
+
 
 
   useEffect(()=> {
     const getData = async()=> {
       const id = glob.id
      
-      const response = await api.get("/budgets/"+id)
-      console.log("trigger use effect paretn")
-      setBudgetForm({ ...response.data });
+      const response = await api.get("/transactions/"+id)
+    
+      
+      formContextObj?.setTransactionForm(response.data)
       
     }
     getData()
@@ -30,7 +32,7 @@ const budgetPage = () => {
 
 
 
-  return (<View style={styles.container}> { budgetForm && <CreateBudgetForm budgetForm={budgetForm as budgetForm}></CreateBudgetForm>}</View>);
+  return (<View style={styles.container}> { formContextObj?.transactionForm && <TransactionForm></TransactionForm>}</View>);
 };
 
 const styles = StyleSheet.create({
@@ -60,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default budgetPage;
+export default transactionPage;

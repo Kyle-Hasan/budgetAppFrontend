@@ -5,6 +5,8 @@ import { Feather } from "@expo/vector-icons";
 import { Href, useRouter } from "expo-router";
 import { setStorageValue } from "@/app/storage/storage";
 import Moment from 'moment';
+import { useContext } from "react";
+import { FormContext } from "@/app/context/FormContex";
 export interface transaction {
     name: string,
     date: Date,
@@ -21,15 +23,21 @@ interface ParentEntity {
 }
 
 interface transctionProps {
-    transaction:transaction
+    transaction:transaction,
+    deleteTransaction:Function
   }
 
-const TransactionItemChild = ({transaction}:transctionProps)=> {
+const TransactionItemChild = ({transaction,deleteTransaction}:transctionProps)=> {
     const router = useRouter()
+    const formContextObj = useContext(FormContext)
 
     const editNavigate = ()=> {
-        setStorageValue("transactionForm",JSON.stringify(transaction))
+        formContextObj?.setTransactionForm(transaction)
         router.push('/transactionFormModal' as Href<string>)
+    }
+
+    const del = ()=> {
+      deleteTransaction(transaction.id)
     }
 
 
@@ -47,7 +55,7 @@ const TransactionItemChild = ({transaction}:transctionProps)=> {
           style={styles.iconStyle} 
         />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={del}>
         <MaterialCommunityIcons 
           name='delete' 
           style={styles.iconStyle} 

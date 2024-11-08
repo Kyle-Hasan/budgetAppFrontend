@@ -58,6 +58,22 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+      
+      name="accounts/[id]"
+      options={{
+        headerShown:false,
+        href: null,
+      }}
+    />
+    <Tabs.Screen
+      
+      name="transactions/[id]"
+      options={{
+        headerShown:false,
+        href: null,
+      }}
+    />
     </Tabs>
   );
 }

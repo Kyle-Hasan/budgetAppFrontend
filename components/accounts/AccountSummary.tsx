@@ -35,10 +35,7 @@ export default function AccountSummary() {
   
   const [accountPageInfo,setAccountPageInfo] = useState<AccountPageInfo>({accounts:[]})
   
-
-  
-  useEffect(()=> {
-    const getData = async ()=> {
+  const getData = async ()=> {
     try{
      setLoading(true)
      const response = await api.get('/accounts/userAccounts')
@@ -51,10 +48,23 @@ export default function AccountSummary() {
       setLoading(false)
     }
     }
+  
+  useEffect(()=> {
+    formContextObj?.setRefreshAccountSummary(() => getData);
 
     getData()
 
 }, [])
+
+
+const deleteAccount = async(id:number)=> {
+  debugger
+  setLoading(true)
+  await api.delete(`/accounts/${id}`)
+  getData()
+  setLoading(false)
+}
+
 
 const goToAccountCreate = ()=> {
   const newForm:accountForm  = {name:'',id:-1,transactions:[],startingBalance:'0'}
@@ -90,7 +100,7 @@ return (
       
       data={accountPageInfo.accounts}
       renderItem={({ item }) => (
-        <AccountListItem accountItem={item} />
+        <AccountListItem deleteAccount={deleteAccount} accountItem={item} />
       )}
       keyExtractor={(item, index) => index.toString()}
     />

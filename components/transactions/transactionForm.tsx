@@ -129,6 +129,9 @@ import SpinnerComponent from "../Spinner";
           }
           
         })
+        if(formContextObj?.refreshTransactionSummary) {
+          formContextObj?.refreshTransactionSummary()
+        }
         setLoading(false)
       }
 

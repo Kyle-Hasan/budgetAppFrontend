@@ -16,11 +16,9 @@ export default function TransactionSummary() {
 
   
   const [transactions,setTransactions] = useState<transaction[]>([])
-  
 
-  
-  useEffect(()=> {
-    const getData = async ()=> {
+
+  const getData = async ()=> {
     setLoading(true)
     try{
      const response = await api.get('/transactions/userTransactions')
@@ -33,6 +31,12 @@ export default function TransactionSummary() {
       setLoading(false)
     }
     }
+  
+
+  
+  useEffect(()=> {
+    formContextObj?.setRefreshTransactionSummary(() => getData);
+    
 
     getData()
 
@@ -44,6 +48,13 @@ const goToTransactionCreate = ()=> {
 
   router.push('/transactionFormModal' as Href<string>)
 
+}
+
+const deleteTransaction = async(id:number)=> {
+  setLoading(true)
+  await api.delete(`/transactions/${id}`)
+  getData()
+  setLoading(false)
 }
 
 return (
@@ -58,7 +69,7 @@ return (
     <FlatList
       data={transactions}
       renderItem={({ item }) => (
-        <TransactionItemChild transaction={item} />
+        <TransactionItemChild deleteTransaction={deleteTransaction} transaction={item} />
       )}
       keyExtractor={(item, index) => index.toString()}
     />

@@ -26,13 +26,11 @@ export default function BudgetSummary() {
 
   
   const [budgetPageInfo,setBudgetPageInfo] = useState<budgetPageResponse>({budgetGoals:[],totalDeposited:0,totalSpent:0})
-  
 
-  
-  useEffect(()=> {
-    const getData = async ()=> {
+  const getData = async ()=> {
     setLoading(true)
     try{
+      console.log("refresh full")
      const response = await api.get('/users/budgetScreen')
      const data:budgetPageResponse  = response.data
      setBudgetPageInfo(data)
@@ -43,6 +41,13 @@ export default function BudgetSummary() {
       setLoading(false)
     }
     }
+  
+
+  
+  useEffect(()=> {
+    debugger
+
+    formContextObj?.setRefreshBudgetSummary(() => getData);
 
     getData()
 
@@ -54,6 +59,13 @@ const goToBudgetCreate = ()=> {
 
   router.push('/budgetFormModal' as Href<string>)
 
+}
+
+const deleteBudget = async(id:number)=> {
+  setLoading(true)
+  await api.delete(`/budgets/${id}`)
+  getData()
+  setLoading(false)
 }
 
 return (
@@ -99,7 +111,7 @@ return (
       
       data={budgetPageInfo.budgetGoals}
       renderItem={({ item }) => (
-        <BudgetListItem budgetItem={item} />
+        <BudgetListItem budgetItem={item} refreshSummary={getData} deleteBudget={deleteBudget} />
       )}
       keyExtractor={(item, index) => index.toString()}
     />

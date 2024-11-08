@@ -14,11 +14,12 @@ export interface accountItem {
 }
 
 interface accountListItemProps {
-  accountItem:accountItem
+  accountItem:accountItem,
+  deleteAccount: Function
 }
 
 
-const AccountListItem = ({accountItem}:accountListItemProps) => {
+const AccountListItem = ({accountItem,deleteAccount}:accountListItemProps) => {
   const router = useRouter();
   const {name,currentAccountBalance,amountDeposited,id} = accountItem
   
@@ -26,6 +27,10 @@ const AccountListItem = ({accountItem}:accountListItemProps) => {
   const goToEdit = ()=> {
     const str:string = `/accounts/${id}`
     router.push(str as Href<string>);
+  }
+
+  const del = ()=> {
+    deleteAccount(id)
   }
   return (
      <View style={styles.box}>
@@ -48,7 +53,7 @@ const AccountListItem = ({accountItem}:accountListItemProps) => {
           style={styles.iconStyle} 
         />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={del}>
         <MaterialCommunityIcons 
           name='delete' 
           style={styles.iconStyle} 

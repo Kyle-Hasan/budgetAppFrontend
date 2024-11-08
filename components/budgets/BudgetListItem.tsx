@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import ProgressBar from './ProgressBar'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useRouter } from 'expo-router';
+import api from '@/app/api/api';
 
 
 export interface budgetItem {
@@ -14,20 +15,24 @@ export interface budgetItem {
 }
 
 interface budgetListItemProps {
-  budgetItem:budgetItem
+  budgetItem:budgetItem,
+  deleteBudget:Function,
+  refreshSummary:Function
 }
 
 
-const BudgetListItem = ({budgetItem}:budgetListItemProps) => {
+const BudgetListItem = ({budgetItem,deleteBudget}:budgetListItemProps) => {
   const router = useRouter();
   const {name,currentSpent,total,id} = budgetItem
   const calculateTotal = Math.max(total,1)
-  const percent = Math.min((currentSpent/(calculateTotal)*100),100)
+  let percent = Math.max((currentSpent/(calculateTotal)*100),0)
+  percent = Math.min(percent,100)
 
   const goToEdit = ()=> {
     const str:string = `/budgets/${id}`
     router.push(str as Href<string>);
   }
+  
   return (
      <View style={styles.box}>
   <View>
@@ -49,7 +54,7 @@ const BudgetListItem = ({budgetItem}:budgetListItemProps) => {
           style={styles.iconStyle} 
         />
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={()=>{deleteBudget(id)}}>
         <MaterialCommunityIcons 
           name='delete' 
           style={styles.iconStyle} 

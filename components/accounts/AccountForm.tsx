@@ -91,13 +91,18 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
           console.log("body is", body)
           
           response = await api.post("/accounts",body)
-          formContextObj?.setTransactionForm(null)
+         
          
         }
+        formContextObj?.setTransactionForm(null)
 
         setFormData(response.data)
      
         formContextObj?.setAccountForm(response.data)
+
+        if(formContextObj?.refreshAccountSummary) {
+          formContextObj?.refreshAccountSummary()
+        }
 
         toast.show('Successfully saved!', {
           message: "Budget Saved",
@@ -122,8 +127,14 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
       }
 
     }
-    
 
+   
+    const deleteTransaction = async(id:number)=> {
+      setLoading(true)
+      await api.delete(`/transactions/${id}`)
+      
+      setLoading(false)
+    }
   
   return (
      <View style={styles.container}>
@@ -153,7 +164,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
     contentContainerStyle={{ }}
     keyExtractor={(item,index)=> index.toString()}
     renderItem={({ item }) => (
-        <TransactionItemChild transaction={item} />
+        <TransactionItemChild deleteTransaction={deleteTransaction} transaction={item} />
       )}
     data={formData.transactions}>
     </FlatList>

@@ -23,14 +23,18 @@ export interface budgetForm {
 }
 
 interface budgetFormProps {
-    budgetForm:budgetForm
+    budgetForm:budgetForm,
+    refreshSummary?: Function
 }
 
 
 
-const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
+const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
 
+
+    
     const toast = useToastController();
+    
     const [loading,setLoading] = useState(false)
 
     const router = useRouter()
@@ -39,6 +43,12 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
 
     const [formData,setFormData] = useState<budgetForm>(budgetForm)
   //  console.log("form data render", formData)
+
+    if (!formData) {
+      console.log(formData)
+      console.log("nothing")
+    return null;
+    }
 
 
     const navigateToTransactionForm = ()=> {
@@ -59,6 +69,7 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
     }
     // get new transactions that shoulded added on this one
     useEffect(()=> {
+      toast.hide()
       console.log(" trigger use effect ")
       if(formContextObj?.transactionForm?.id == -1 && formContextObj?.transactionForm?.name) {
       
@@ -93,17 +104,21 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
           console.log("body is", body)
           
           response = await api.post("/budgets",body)
-          formContextObj?.setTransactionForm(null)
+          
          
         }
 
-        
+        formContextObj?.setTransactionForm(null)
 
         setFormData(response.data)
         console.log(" form data is  " , formData)
         console.log(" response is " , response.data)
         formContextObj?.setBudgetForm(response.data)
+        if(formContextObj?.refreshBudgetSummary) {
+          formContextObj?.refreshBudgetSummary()
+        }
         console.log("budget form context", formContextObj)
+        toast.hide()
         toast.show('Successfully saved!', {
           message: "Budget Saved",
           native:false,
@@ -113,10 +128,14 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
           
         })
         setLoading(false)
+        if(refreshSummary) {
+          refreshSummary()
+        }
       }
       catch(e) {
+        toast.hide()
         toast.show('Failed', {
-          message: "Failure",
+          message: "Failed to save",
           native:false,
           customData: {
             color:'red'
@@ -128,6 +147,14 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
       }
 
     }
+
+    const deleteTransaction = async(id:number)=> {
+      setLoading(true)
+      await api.delete(`/transactions/${id}`)
+      
+      setLoading(false)
+    }
+    
     
 
   
@@ -159,7 +186,7 @@ const CreateBudgetForm = ({budgetForm}:budgetFormProps) => {
     contentContainerStyle={{ }}
     keyExtractor={(item,index)=> index.toString()}
     renderItem={({ item }) => (
-        <TransactionItemChild transaction={item} />
+        <TransactionItemChild deleteTransaction={deleteTransaction} transaction={item} />
       )}
     data={formData.transactions}>
     </FlatList>
