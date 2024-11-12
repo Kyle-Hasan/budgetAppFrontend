@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView, TextInput } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView, TextInput,Dimensions } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 
@@ -46,7 +46,15 @@ export default function AccountSummary() {
   const [endDate,setEndDate] = useState(endOfMonth.toISOString().split('T')[0]);
   const [sortOption, setSortOption] = useState('name');
   const [sortOrderAsc, setSortOrderAsc] = useState(true);
+  const sortOptions = [{label:"current account balance",option:"currentAccountBalance"},{label:"name",option:"name"}, 
+    {label:"amount deposited",  option:"amountDeposited"}]
   
+  const getColumnCount = ()=>{
+    const screenWidth = Dimensions.get('window').width;
+    const spaceForItem = 175
+    return Math.floor(screenWidth / spaceForItem);                       
+  }
+  const [numColumns, setNumColumns] = useState(getColumnCount());
   const getData = async (startDateNew?:string,endDateNew?:string)=> {
 
     console.log("refresh full")
@@ -163,6 +171,8 @@ const handleSortChange = (option:string) => {
   sortAccounts(option);
 };
 
+
+
 return (
   !loading ?
   (<View style={styles.container}>
@@ -175,39 +185,20 @@ return (
     <View style={styles.timeContainer}>
     <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
     </View>
-    <View  style={styles.sortContainer}>
-    <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('name')}>
-    <Text style={styles.text} >Sort by name</Text>
-    {sortOption === 'name' && (
+    <FlatList contentContainerStyle={{ gap: 16 }} numColumns={numColumns}  data={sortOptions} keyExtractor={(item)=> item.option} renderItem={
+      ({item})=> {
+      return (<TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange(item.option)}>
+    <Text style={styles.text} >Sort by {item.label}</Text>
+    {sortOption === item.option && (
       <Feather
         name={sortOrderAsc ? 'chevron-down': 'chevron-up' }
         size={16}
         color="#ffffff"
       />
     )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('currentAccountBalance')}>
-    <Text style={styles.text} >Sort by current balance</Text>
-    {sortOption === 'currentAccountBalance' && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up' }
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('amountDeposited')}>
-    <Text style={styles.text} >Sort by amount deposited</Text>
-    {sortOption === 'amountDeposited' && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>
-</View>
-    
+  </TouchableOpacity>)
+      }
+    }></FlatList>
     
     <TextInput
           autoCorrect={false}
@@ -317,6 +308,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     borderRadius: 5,
     textAlign: 'center',
+    marginRight:8
   },
   text: {
     color: '#ffffff',

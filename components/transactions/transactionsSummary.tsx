@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Dimensions} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 
@@ -28,6 +28,16 @@ export default function TransactionSummary() {
   const [endDate,setEndDate] = useState(endOfMonth.toISOString().split('T')[0]);
   const [sortOption, setSortOption] = useState('date');
   const [sortOrderAsc, setSortOrderAsc] = useState(false);
+  const getColumnCount = ()=>{
+    const screenWidth = Dimensions.get('window').width;
+    const spaceForItem = 175
+    
+    return Math.ceil(screenWidth / spaceForItem);                       
+  }
+  const [numColumns, setNumColumns] = useState(getColumnCount());
+
+  const sortOptions = [{label:"date",option:"date"},{label:"name",option:"name"}, 
+    {label:"amount",  option:"amount"}, {label:"budget",  option:"budget"}, {label:"account",  option:"account"}]
 
 
 
@@ -207,62 +217,20 @@ return (
       <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
     </View>
     <View style={styles.sortContainer}>
-    <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('name')}>
-    <Text style={styles.text} >Sort by Name</Text>
-    {sortOption === 'name' && (
+    <FlatList contentContainerStyle={{ gap: 16 }} numColumns={numColumns}  data={sortOptions} keyExtractor={(item)=> item.option} renderItem={
+      ({item})=> {
+      return (<TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange(item.option)}>
+    <Text style={styles.text} >Sort by {item.label}</Text>
+    {sortOption === item.option && (
       <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
+        name={sortOrderAsc ? 'chevron-down': 'chevron-up' }
         size={16}
         color="#ffffff"
       />
     )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('date')}>
-    <Text style={styles.text} >Sort by Date</Text>
-    {sortOption === 'date' && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('amount')}>
-    <Text style={styles.text} >Sort by Amount</Text>
-    {sortOption === 'amount' && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('budget')}>
-    <Text style={styles.text} >Sort by Budget</Text>
-    {sortOption === 'budget' && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('account')}>
-    <Text style={styles.text} >Sort by Account</Text>
-    {sortOption === 'account' && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => filterByType(false)}>
-    <Text style={styles.text} >Filter by income</Text>
-  </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() => filterByType(true)}>
-    <Text style={styles.text} >Filter by expense</Text>
-  </TouchableOpacity>
+  </TouchableOpacity>)
+      }
+    }></FlatList>
 </View>
 
     <TextInput
@@ -368,6 +336,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     borderRadius: 5,
     textAlign: 'center',
+    marginRight:8
   },
 
   text: {
