@@ -47,16 +47,8 @@ const Dropdown = ({labelName,items,keyName,defaultSelection,changeSelection}:dro
 
 const styles = StyleSheet.create({
     container: {
-        borderWidth:1,
-        borderColor:'red',
-        
         minWidth:200,
-       
         maxHeight:200
-        
-        
-        
-
     },
     listHide: {
         display:'none'

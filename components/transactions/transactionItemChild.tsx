@@ -1,6 +1,6 @@
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView, Alert } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { Href, useRouter } from "expo-router";
 import { setStorageValue } from "@/app/storage/storage";
@@ -9,8 +9,8 @@ import { useContext } from "react";
 import { FormContext } from "@/app/context/FormContex";
 export interface transaction {
     name: string,
-    date: Date,
-    amount:string,
+    date: string,
+    amount:number | null,
     id:number,
     budget?:ParentEntity | null
     account?:ParentEntity | null,
@@ -24,10 +24,12 @@ interface ParentEntity {
 
 interface transctionProps {
     transaction:transaction,
-    deleteTransaction:Function
+    deleteTransaction:Function,
+    showAccountAndBudget?: boolean
+   
   }
 
-const TransactionItemChild = ({transaction,deleteTransaction}:transctionProps)=> {
+const TransactionItemChild = ({transaction,deleteTransaction,showAccountAndBudget}:transctionProps)=> {
     const router = useRouter()
     const formContextObj = useContext(FormContext)
 
@@ -36,9 +38,17 @@ const TransactionItemChild = ({transaction,deleteTransaction}:transctionProps)=>
         router.push('/transactionFormModal' as Href<string>)
     }
 
-    const del = ()=> {
-      deleteTransaction(transaction.id)
-    }
+   
+
+    const createTwoButtonAlert = () =>
+      Alert.alert('Confirm Delete', 'Are you sure you want to delete', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => {deleteTransaction(transaction.id)}},
+      ]);
 
 
     return (<View style={styles.box}>
@@ -47,7 +57,8 @@ const TransactionItemChild = ({transaction,deleteTransaction}:transctionProps)=>
             ${transaction.amount}
           </Text>
         </View>
-    <View style={styles.topSection}><Text style={styles.textStyle}>{Moment(transaction.date).format('d MMMM Y')}</Text><Text style={styles.whiteText}>{transaction.type}</Text></View>
+    <View style={styles.topSection}><Text style={styles.textStyle}>{Moment(transaction.date).format('d MMMM Y')}</Text><Text style={styles.rightText}>{transaction.type}</Text></View>
+    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.textStyle}>{transaction.account?.name}</Text><Text style={styles.rightText}>{transaction.budget?.name}</Text></View>}
     <View style={styles.buttonBar}>
       <TouchableOpacity onPress={editNavigate}>
         <MaterialCommunityIcons 
@@ -55,7 +66,7 @@ const TransactionItemChild = ({transaction,deleteTransaction}:transctionProps)=>
           style={styles.iconStyle} 
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={del}>
+      <TouchableOpacity onPress={createTwoButtonAlert}>
         <MaterialCommunityIcons 
           name='delete' 
           style={styles.iconStyle} 
@@ -86,10 +97,17 @@ const styles = StyleSheet.create({
       alignItems: 'flex-start',  
       justifyContent: 'space-between',
       marginBottom: 10,
-      width:'100%'
+      width:"90%",
+      
     },
     whiteText: {
       color: "#ffffff",
+    
+    },
+    rightText: {
+      color: "#ffffff",
+      textAlign:'right',
+      paddingTop: 5,
     },
     textStyle: {
       color: "#ffffff",

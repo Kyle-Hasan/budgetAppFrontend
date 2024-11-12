@@ -65,7 +65,7 @@ const SignupForm = () => {
     try{
     const response = await authApi.signup({email:formData.email,username: formData.username, password: formData.password})
     const {refreshToken, accessToken} = response.data
-    authObj?.login({refreshToken,accessToken})
+    authObj?.login({refreshToken,accessToken,username:formData.username})
     setLoading(false)
 
     router.push('/budget')

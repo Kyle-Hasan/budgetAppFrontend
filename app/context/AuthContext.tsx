@@ -4,7 +4,9 @@ import { getStorageValue, setStorageValue } from '../storage/storage';
     type AuthContextType = {
         isAuthenicated:boolean,
         logout: ()=> void,
-        login:(data:{accessToken:string, refreshToken:string})=> void
+        login:(data:{accessToken:string, refreshToken:string,username:string})=> void,
+        username:string | null
+        setUsername:Function
 
 
     } | null
@@ -16,6 +18,7 @@ import { getStorageValue, setStorageValue } from '../storage/storage';
         const [isAuthenicated,setIsAuthenicated] = useState<boolean>(false)
         const [accessToken,setAccessToken] = useState<string | null>()
         const [refreshToken,setRefreshToken] = useState<string | null>()
+        const [username,setUsername] = useState<string | null>(null)
 
          useEffect (()=> {
             const aToken = getStorageValue("accessToken")
@@ -37,14 +40,17 @@ import { getStorageValue, setStorageValue } from '../storage/storage';
 
         }
 
-        const login = (data:{accessToken:string, refreshToken:string}) => {
+        const login = (data:{accessToken:string, refreshToken:string,username:string}) => {
             setIsAuthenicated(true)
             setAccessToken(data.accessToken)
             setRefreshToken(data.refreshToken)
             setStorageValue("accessToken",data.accessToken)
             setStorageValue("refreshToken",data.refreshToken)
+            setStorageValue("username",data.username)
+            setUsername(data.username)
+
         }
-        return <AuthContext.Provider value={{isAuthenicated,login,logout}}>{children}</AuthContext.Provider>
+        return <AuthContext.Provider value={{isAuthenicated,login,logout,username,setUsername}}>{children}</AuthContext.Provider>
     }
 
 export {AuthProvider,AuthContext}

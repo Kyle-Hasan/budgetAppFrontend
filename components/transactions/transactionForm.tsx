@@ -5,19 +5,23 @@ import { transaction } from "./transactionItemChild";
 
 
 import Dropdown from "../Dropdown";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import './datePicker.css'
+
+import '../datePicker.css'
 
 import { useContext } from "react";
-import DatePicker from 'react-datepicker'; // For web
+import DateTimePicker from '@react-native-community/datetimepicker';
 import api from "@/app/api/api";
 import { FormContext } from "@/app/context/FormContex";
 import { useRouter } from "expo-router";
 import { useToastController } from "@tamagui/toast";
 import CurrentToast from "../CurrentToast";
 import SpinnerComponent from "../Spinner";
-
-
+import WebDatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { newDate } from "react-datepicker/dist/date_utils";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import DateInput from "../DateInput";
+import CurrencyInput from "react-native-currency-input";
  const TransactionForm = ()=> {
   const toast = useToastController();
   const [loading,setLoading] = useState(false)
@@ -34,13 +38,17 @@ import SpinnerComponent from "../Spinner";
 
     const router = useRouter()
     const formContextObj = useContext(FormContext)
-    const [transaction,setTransaction] = useState<transaction>({name:'',id:1,amount:'',date:new Date(),account:null,budget:null,type:"Expense"})
+    const [transaction,setTransaction] = useState<transaction>({name:'',id:1,amount:0,date:'',account:null,budget:null,type:"Expense"})
     const [budgets,setBudgets] = useState<any [] | null>(null)
     const [accounts,setAccounts] = useState<any[] | null>(null)
+  
+    const [openDatePicker, setOpenDatePicker] = useState(false)
+
    
   const [defaultType,setDefaultType] = useState<{label:string} | null | undefined>(null)
     useEffect(
       ()=> {
+        toast.hide()
         let transactionData = formContextObj?.transactionForm
         if(transactionData) {
        
@@ -104,11 +112,13 @@ import SpinnerComponent from "../Spinner";
         setLoading(true)
         // dont make api request for budget still being made
         console.log(formContextObj)
-        const getType = transaction.type ? transaction.type: defaultType?.label.toUpperCase()
+        const getType = transaction.type ? transaction.type.toUpperCase(): defaultType?.label.toUpperCase()
+        const date = transaction.date ? new Date(transaction.date) : new Date()
+        setTransaction({...transaction,type:getType})
         if(formContextObj?.budgetForm?.id !== -1 && formContextObj?.accountForm?.id !== -1) {
         console.log(transaction)
         
-        const body = {...transaction, amount: +transaction.amount, type: getType}
+        const body = {...transaction, amount: transaction.amount, type: getType, date:date}
         let response:any;
         if(transaction.id && transaction.id !== -1) {
           response = await api.patch('/transactions',body)
@@ -180,8 +190,19 @@ import SpinnerComponent from "../Spinner";
             <Text style={styles.label} >Name</Text>
             <TextInput style={styles.input} value={transaction.name} onChangeText={(text) => setFormData('name',text)}></TextInput>
             <Text style={styles.label}>Amount</Text>
-            <TextInput style={styles.input}  value={transaction.amount} onChangeText={(text) => setFormData('amount',text.replace(/[^0-9]/g, ''))}></TextInput>
+            <CurrencyInput
+        value={transaction.amount}
+        onChangeValue={(value)=> setFormData("amount",value)}
+        prefix="$"
+        delimiter=","
+        separator="."
+        precision={2}
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="$0.00"
+      />
             <Text style={styles.label}>Date</Text>
+            <DateInput date={transaction.date} setDate={(value:any)=> {setFormData("date",value)}}></DateInput>
            
       {budgets && (<View style={styles.budgetDropdown}><Text style={styles.label}>Budget</Text><Dropdown changeSelection={budgetChanged} defaultSelection={transaction?.budget} items={budgets} keyName="id" labelName="name" ></Dropdown></View>) }
       {accounts && (<View style={styles.accountDropdown}><Text style={styles.label}>Account</Text><Dropdown changeSelection={accountChanged} defaultSelection={transaction?.account} items={accounts} keyName="id" labelName="name" ></Dropdown></View>) }
@@ -277,7 +298,13 @@ const styles = StyleSheet.create({
         zIndex:199,
        
         flexShrink:1
-      }
+      },
+
+      spinnerStyle: {
+        marginTop:"50%"
+
+      },
+      
 
 
       

@@ -67,7 +67,7 @@ const LoginForm = () => {
     const {accessToken,refreshToken} = response.data
     
    
-    authObj?.login({accessToken,refreshToken})
+    authObj?.login({accessToken,refreshToken,username:formData.username})
     
     setLoading(false)
     router.push('/budget')

@@ -13,11 +13,12 @@ import { useToastController} from '@tamagui/toast';
 
 import CurrentToast from '@/components/CurrentToast';
 import SpinnerComponent from '../Spinner';
+import CurrencyInput from 'react-native-currency-input';
 
 
 export interface budgetForm {
     name:string,
-    amount:string,
+    amount:number | null,
     id:number,
     transactions:transaction[]
 }
@@ -56,8 +57,8 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
       const transaction:transaction = {
         name: "",
         id: -1,
-        date: new Date(),
-        amount: "",
+        date: '',
+        amount: 0,
         budget: {name:formData.name,id:formData.id}
       }
       if(formContextObj) {
@@ -92,7 +93,7 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
       try{
       setLoading(true)
       console.log("form data is  ",formData)
-        const body = {...formData,amount:+formData.amount}
+        const body = {...formData,amount:formData.amount}
         let response:any
         
         console.log("form data pre check",formData.id)
@@ -160,7 +161,6 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
   
   return (
      <View style={styles.container}>
-      
         <Text style={styles.title} >Budget Form</Text>
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -170,17 +170,20 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
           value={formData.name}
           onChangeText={(text) => setFormData({ ...formData, name: text })}/>
         <Text style={styles.label}>Amount</Text>
-        <TextInput
-          autoCorrect={false}
-          keyboardType="numeric"
-          autoCapitalize='none'
-          style={styles.input}
-          value={formData.amount}
-          onChangeText={(text) => setFormData({ ...formData, amount: text.replace(/[^0-9]/g, '')})}/>
+        <CurrencyInput
+        value={formData.amount}
+        onChangeValue={(value)=> setFormData({...formData,amount:value})}
+        prefix="$"
+        delimiter=","
+        separator="."
+        precision={2}
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="$0.00"
+      />
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
     { formData.transactions && formData.transactions.length > 0 &&
-    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10, borderColor:'red',borderWidth:1,minWidth:200}}>
-      
+    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10,minWidth:200}}>
     <FlatList
      ListEmptyComponent={() => <View style={{ height: 0}} />}
     contentContainerStyle={{ }}

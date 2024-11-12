@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView, TextInput } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 
@@ -9,6 +9,8 @@ import { budgetForm } from "@/components/budgets/CreateBudgetForm";
 import AccountListItem from "./AccountListItem";
 import { accountForm } from "./AccountForm";
 import SpinnerComponent from "../Spinner";
+import { useDebounce } from "@/hooks/useDebounce";
+import DateFilter from "../DateFilter";
 
 
 
@@ -34,14 +36,46 @@ export default function AccountSummary() {
 
   
   const [accountPageInfo,setAccountPageInfo] = useState<AccountPageInfo>({accounts:[]})
+  const [accounts,setAccounts] = useState<AccountItem[]>([])
+
+  const today = new Date();
+
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  const [startDate,setStartDate] = useState(startOfMonth.toISOString().split('T')[0]);
+  const [endDate,setEndDate] = useState(endOfMonth.toISOString().split('T')[0]);
+  const [sortOption, setSortOption] = useState('name');
+  const [sortOrderAsc, setSortOrderAsc] = useState(true);
   
-  const getData = async ()=> {
+  const getData = async (startDateNew?:string,endDateNew?:string)=> {
+
+    console.log("refresh full")
+   
+      let startDateObj = new Date(startDate); 
+      if(startDateNew) {
+        startDateObj = new Date(startDateNew)
+      }
+      
+      let endDateObj = new Date(endDate); 
+      if(endDateNew) {
+        endDateObj = new Date(endDateNew); 
+      }
+      
+      const startDateStr =  startDateObj.toISOString().split('T')[0]; 
+      
+      const endDateStr =  endDateObj.toISOString().split('T')[0]; 
     try{
      setLoading(true)
-     const response = await api.get('/accounts/userAccounts')
+     const response = await api.get('/accounts/userAccounts',{
+      params: {
+        startDate:startDateStr,
+        endDate:endDateStr
+      }
+     })
      const data:any  = response.data
      setAccountPageInfo({...accountPageInfo,accounts:data})
      setLoading(false)
+     sortAccounts(sortOption,data)
     }
     catch(error) {
       console.log("error")
@@ -58,21 +92,76 @@ export default function AccountSummary() {
 
 
 const deleteAccount = async(id:number)=> {
-  debugger
+ 
   setLoading(true)
   await api.delete(`/accounts/${id}`)
   getData()
   setLoading(false)
 }
 
+const [searchVal,setSearchVal] = useState("")
+
+
+const filterAccounts = (text:string)=> {
+  
+  if(text.length == 0) {
+    setAccounts(accountPageInfo.accounts)
+  }
+  
+  setAccounts(accountPageInfo.accounts.filter(x=> x.name.toLowerCase().includes(text.toLowerCase())))
+} 
+
+const debouncedFilter = useDebounce(filterAccounts,200)
+console.log(debouncedFilter)
+
+const handleSearchChange = (text: string) => {
+  setSortOrderAsc(!sortOrderAsc)
+  setSearchVal(text);
+  
+  debouncedFilter(text); 
+};
+
+
 
 const goToAccountCreate = ()=> {
-  const newForm:accountForm  = {name:'',id:-1,transactions:[],startingBalance:'0'}
+  const newForm:accountForm  = {name:'',id:-1,transactions:[],startingBalance:0}
   formContextObj?.setAccountForm(newForm)
 
   router.push('/accountFormModal' as Href<string>)
 
 }
+
+
+
+
+const sortAccounts = (option:string, optionalArr?:AccountItem[]) => {
+  let sortedAccounts = [...accounts];
+
+  if(optionalArr) {
+    sortedAccounts = [...optionalArr]
+  }
+
+  if (option === 'date') {
+    sortedAccounts.sort();
+  } else if (option === 'currentAccountBalance') {
+    sortedAccounts.sort((a, b) =>sortOrderAsc ? a.currentAccountBalance-b.currentAccountBalance : b.currentAccountBalance - a.currentAccountBalance);
+  } else if (option === 'amountDeposited') {
+    sortedAccounts.sort((a, b) => sortOrderAsc ? a.amountDeposited-b.amountDeposited : b.amountDeposited - a.amountDeposited);
+  }
+  else if(option === 'name') {
+    sortedAccounts.sort((a,b)=> {
+     return sortOrderAsc ?  a.name.localeCompare(b.name) :  b.name.localeCompare(a.name)
+    })
+  }
+
+  setAccounts(sortedAccounts);
+};
+
+const handleSortChange = (option:string) => {
+  setSortOrderAsc(!sortOrderAsc)
+  setSortOption(option);
+  sortAccounts(option);
+};
 
 return (
   !loading ?
@@ -83,22 +172,57 @@ return (
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
     </View>
-    
     <View style={styles.timeContainer}>
-      <TouchableOpacity>
-        <Feather name="arrow-left" style={styles.timeIcon} />
-      </TouchableOpacity>
-      <Text style={styles.header}>November 2024</Text>
-      <TouchableOpacity>
-        <Feather name="arrow-right" style={styles.timeIcon} />
-      </TouchableOpacity>
+    <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
     </View>
+    <View  style={styles.sortContainer}>
+    <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('name')}>
+    <Text style={styles.text} >Sort by name</Text>
+    {sortOption === 'name' && (
+      <Feather
+        name={sortOrderAsc ? 'chevron-down': 'chevron-up' }
+        size={16}
+        color="#ffffff"
+      />
+    )}
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('currentAccountBalance')}>
+    <Text style={styles.text} >Sort by current balance</Text>
+    {sortOption === 'currentAccountBalance' && (
+      <Feather
+        name={sortOrderAsc ? 'chevron-down' : 'chevron-up' }
+        size={16}
+        color="#ffffff"
+      />
+    )}
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange('amountDeposited')}>
+    <Text style={styles.text} >Sort by amount deposited</Text>
+    {sortOption === 'amountDeposited' && (
+      <Feather
+        name={sortOrderAsc ? 'chevron-down' : 'chevron-up'}
+        size={16}
+        color="#ffffff"
+      />
+    )}
+  </TouchableOpacity>
+</View>
+    
+    
+    <TextInput
+          autoCorrect={false}
+          value={searchVal}
+          onChangeText={handleSearchChange}
+          autoCapitalize='none'
+          style={styles.input}
+          placeholder="search by name"
+         />
     
    
     
     <FlatList
       
-      data={accountPageInfo.accounts}
+      data={accounts}
       renderItem={({ item }) => (
         <AccountListItem deleteAccount={deleteAccount} accountItem={item} />
       )}
@@ -133,6 +257,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 5,
     marginVertical: 10,
+    zIndex:901
   },
   row: {
     flexDirection:'row',
@@ -165,6 +290,36 @@ const styles = StyleSheet.create({
   list: {
     alignItems:'center',
     width:'100%'
+  },
+  input: {
+    backgroundColor: '#2c2c2c',
+    color: '#ffffff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#444',
+    padding: 10,
+    marginVertical: 10,
+    minWidth:200
+  },
+
+  sortContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+    gap:10,
+    flexWrap:'wrap',
+
+  },
+  sortButton: {
+    color: '#ffffff',
+    fontSize: 14,
+    padding: 5,
+    backgroundColor: '#444',
+    borderRadius: 5,
+    textAlign: 'center',
+  },
+  text: {
+    color: '#ffffff',
   }
  
 });

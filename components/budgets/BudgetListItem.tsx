@@ -1,6 +1,6 @@
 // components/BudgetListItem.tsx
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import ProgressBar from './ProgressBar'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useRouter } from 'expo-router';
@@ -28,6 +28,16 @@ const BudgetListItem = ({budgetItem,deleteBudget}:budgetListItemProps) => {
   let percent = Math.max((currentSpent/(calculateTotal)*100),0)
   percent = Math.min(percent,100)
 
+  const createTwoButtonAlert = () =>
+    Alert.alert('Confirm Delete', 'Are you sure you want to delete', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => {deleteBudget(id)}},
+    ]);
+
   const goToEdit = ()=> {
     const str:string = `/budgets/${id}`
     router.push(str as Href<string>);
@@ -54,7 +64,7 @@ const BudgetListItem = ({budgetItem,deleteBudget}:budgetListItemProps) => {
           style={styles.iconStyle} 
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={()=>{deleteBudget(id)}}>
+      <TouchableOpacity onPress={()=>{createTwoButtonAlert()}}>
         <MaterialCommunityIcons 
           name='delete' 
           style={styles.iconStyle} 

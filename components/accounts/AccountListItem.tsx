@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useRouter } from 'expo-router';
@@ -29,9 +29,18 @@ const AccountListItem = ({accountItem,deleteAccount}:accountListItemProps) => {
     router.push(str as Href<string>);
   }
 
-  const del = ()=> {
-    deleteAccount(id)
-  }
+  
+
+  const createTwoButtonAlert = () =>
+    Alert.alert('Confirm Delete', 'Are you sure you want to delete', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => {deleteAccount(id)}},
+    ]);
+  
   return (
      <View style={styles.box}>
   <View>
@@ -53,7 +62,7 @@ const AccountListItem = ({accountItem,deleteAccount}:accountListItemProps) => {
           style={styles.iconStyle} 
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={del}>
+      <TouchableOpacity onPress={createTwoButtonAlert}>
         <MaterialCommunityIcons 
           name='delete' 
           style={styles.iconStyle} 

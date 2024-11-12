@@ -30,7 +30,7 @@ const budgetPage = () => {
 
 
 
-  return (<View style={styles.container}> { budgetForm && <CreateBudgetForm budgetForm={budgetForm as budgetForm}></CreateBudgetForm>}</View>);
+  return (<View style={styles.container}>{ budgetForm && <CreateBudgetForm budgetForm={budgetForm as budgetForm}></CreateBudgetForm>}</View>);
 };
 
 const styles = StyleSheet.create({

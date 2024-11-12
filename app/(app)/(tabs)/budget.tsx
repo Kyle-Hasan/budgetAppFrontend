@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 
 const budgetPage = () => {
+  console.log("budget page")
   return (<View style={styles.container}><BudgetSummary></BudgetSummary></View>);
 };
 

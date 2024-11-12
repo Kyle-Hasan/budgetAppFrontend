@@ -1,7 +1,13 @@
-import { Tabs } from "expo-router";
+import { Tabs, usePathname } from "expo-router";
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-
+import { Button, Modal, View, Text, TouchableOpacity } from 'react-native';
+import { useContext, useState } from "react";
+import { AuthContext } from "@/app/context/AuthContext";
+import { getStorageValue } from "@/app/storage/storage";
 export default function TabLayout() {
+  const authContext = useContext(AuthContext)
+  const username = getStorageValue("username")
+  
   return (
     <Tabs
       screenOptions={{
@@ -16,6 +22,13 @@ export default function TabLayout() {
         },
       }}
     >
+      <Tabs.Screen
+        name="index"
+        options={{
+          headerShown:false,
+          href: null,
+        }}
+      />
       <Tabs.Screen
         name="budget"
         
@@ -74,6 +87,20 @@ export default function TabLayout() {
         href: null,
       }}
     />
+
+<Tabs.Screen
+      
+      name="user"
+      options={{
+        headerShown:false,
+        title: `${username}`,
+        tabBarIcon: ({ color, focused }) => (
+          <FontAwesome6 name="user" size={24} color="white" />
+        ),
+      }}
+    />
+
+
     </Tabs>
   );
 }

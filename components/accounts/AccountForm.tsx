@@ -12,11 +12,12 @@ import TransactionItemChild, { transaction } from '@/components/transactions/tra
 import { useToastController } from '@tamagui/toast';
 import CurrentToast from '../CurrentToast';
 import SpinnerComponent from '../Spinner';
+import CurrencyInput from 'react-native-currency-input';
 
 
 export interface accountForm {
     name:string,
-    startingBalance:string,
+    startingBalance:number | null,
     id:number,
     transactions:transaction[]
 }
@@ -43,8 +44,8 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
       const transaction:transaction = {
         name: "",
         id: -1,
-        date: new Date(),
-        amount: "",
+        date: '',
+        amount: 0,
         account: {name:formData.name,id:formData.id},
         budget:null
       }
@@ -57,6 +58,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
     }
     // get new transactions that shoulded added on this one
     useEffect(()=> {
+      toast.hide()
       console.log(" trigger use effect ")
       if(formContextObj?.transactionForm?.id == -1 && formContextObj?.transactionForm?.name) {
       
@@ -72,14 +74,11 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
     }, [formContextObj?.transactionForm])
 
 
-
-
-
     const handleSubmit = async() => {
       try{
       setLoading(true)
       console.log("form data is  ",formData)
-        const body = {...formData,startingBalance:+formData.startingBalance}
+        const body = {...formData,startingBalance:formData.startingBalance}
         let response:any
         
         console.log("form data pre check",formData.id)
@@ -148,13 +147,18 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
           value={formData.name}
           onChangeText={(text) => setFormData({ ...formData, name: text })}/>
         <Text style={styles.label}>Starting Balance</Text>
-        <TextInput
-          autoCorrect={false}
-          keyboardType="numeric"
-          autoCapitalize='none'
-          style={styles.input}
-          value={formData.startingBalance}
-          onChangeText={(text) => setFormData({ ...formData, startingBalance: text.replace(/[^0-9]/g, '')})}/>
+       
+          <CurrencyInput
+        value={formData.startingBalance}
+        onChangeValue={(value)=> setFormData({...formData,startingBalance:value})}
+        prefix="$"
+        delimiter=","
+        separator="."
+        precision={2}
+        style={styles.input}
+        keyboardType="numeric"
+        placeholder="$0.00"
+      />
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
     { formData.transactions && formData.transactions.length > 0 &&
     (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10, borderColor:'red',borderWidth:1,minWidth:200}}>

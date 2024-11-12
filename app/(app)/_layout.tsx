@@ -1,8 +1,8 @@
-import { Text, View } from 'react-native';
+
 import { Redirect, Stack, Tabs } from 'expo-router';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { FontAwesome } from '@expo/vector-icons';
+
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 

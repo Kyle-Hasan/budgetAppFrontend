@@ -10,3 +10,15 @@
     border-width: 1;
     width: 175px;
 }
+
+.react-datepicker-popper {
+    z-index: 999 !important;
+}
+
+.react-datepicker {
+    z-index: 999 !important;
+}
+
+.calendarIcon {
+    color:white !important;
+}
