@@ -12,21 +12,28 @@ import { FormContext } from '@/app/context/FormContex';
 
 const budgetPage = () => {
   const glob = useGlobalSearchParams();
+  
   const formContextObj = useContext(FormContext)
   const [budgetForm,setBudgetForm] = useState<budgetForm | null>(null)
 
 
   useEffect(()=> {
     const getData = async()=> {
+  
+      
       const id = glob.id
+
+      if(!id) return
+
+     
      
       const response = await api.get("/budgets/"+id)
-      console.log("trigger use effect paretn")
+      console.log("trigger use effect paretn",response.data)
       setBudgetForm({ ...response.data });
       
     }
     getData()
-  },[])
+  },[glob.id])
 
 
 

@@ -185,6 +185,7 @@ return (
     <View style={styles.timeContainer}>
     <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
     </View>
+    <View style={styles.sortContainer}>
     <FlatList contentContainerStyle={{ gap: 16 }} numColumns={numColumns}  data={sortOptions} keyExtractor={(item)=> item.option} renderItem={
       ({item})=> {
       return (<TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange(item.option)}>
@@ -199,13 +200,14 @@ return (
   </TouchableOpacity>)
       }
     }></FlatList>
-    
+    </View>
     <TextInput
           autoCorrect={false}
           value={searchVal}
           onChangeText={handleSearchChange}
           autoCapitalize='none'
           style={styles.input}
+          placeholderTextColor={"white"}
           placeholder="search by name"
          />
     
@@ -299,6 +301,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     gap:10,
     flexWrap:'wrap',
+    
 
   },
   sortButton: {

@@ -9,6 +9,7 @@ import { budgetForm } from "@/components/budgets/CreateBudgetForm";
 import SpinnerComponent from "../Spinner";
 import { useDebounce } from "@/hooks/useDebounce";
 import DateFilter from "../DateFilter";
+import PieChartView from "../PieChartView";
 
 
 
@@ -22,7 +23,7 @@ interface budgetPageResponse {
 
 export default function BudgetSummary() {
 
-  console.log("budget summary")
+ 
 
   const router = useRouter()
   const formContextObj = useContext(FormContext)
@@ -47,7 +48,7 @@ export default function BudgetSummary() {
   }
   const [numColumns, setNumColumns] = useState(getColumnCount());
 
-  const sortOptions = [{label:"totalAmount",option:"total amount"},{label:"name",option:"name"}, 
+  const sortOptions = [{label:"total amount",option:"totalAmount"},{label:"name",option:"name"}, 
     {label:"amount spent",  option:"amountSpent"}]
   
 
@@ -76,6 +77,7 @@ export default function BudgetSummary() {
       }
      })
      const data:budgetPageResponse  = response.data
+     
      setBudgetPageInfo(data)
      sortBudgets(sortOption,data.budgetGoals)
      setLoading(false)
@@ -147,7 +149,7 @@ const sortBudgets = (option:string, optionalArr?:budgetItem[]) => {
   } else if (option === 'totalAmount') {
     sortedBudgets.sort((a, b) =>sortOrderAsc ? a.total-b.total : b.total - a.total);
   } else if (option === 'amountSpent') {
-    sortedBudgets.sort((a, b) =>sortOrderAsc ? a.total-b.total : b.currentSpent - a.currentSpent);
+    sortedBudgets.sort((a, b) =>sortOrderAsc ? a.currentSpent-b.currentSpent : b.currentSpent - a.currentSpent);
   }
   else if(option === 'name') {
     sortedBudgets.sort((a,b)=> {
@@ -168,70 +170,62 @@ const handleSortChange = (option:string) => {
 
 return (
   !loading ?
-  (<View style={styles.container}>
+
+  (<View style={{ flex: 1 }}><ScrollView contentContainerStyle={{}} style={styles.container}>
     <View style={styles.timeContainer}>
       <Text style={styles.header}>Budgets</Text>
       <TouchableOpacity onPress={goToBudgetCreate}>
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
     </View>
+    <View>
+      <PieChartView pieChartData={budgets}></PieChartView>
+    </View>
+    <View style={styles.box}>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Total Spendings:  </Text>
+        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
+      </View>
+     
+    </View>
     <View style={styles.timeContainer}>
       <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
     </View>
     <View style={styles.sortContainer}>
-    <FlatList contentContainerStyle={{ gap: 16 }}  numColumns={numColumns}  data={sortOptions} keyExtractor={(item)=> item.option} renderItem={
-      ({item})=> {
-      return (<TouchableOpacity style={styles.sortButton} onPress={() => handleSortChange(item.option)}>
-    <Text style={styles.text} >Sort by {item.label}</Text>
-    {sortOption === item.option && (
-      <Feather
-        name={sortOrderAsc ? 'chevron-down': 'chevron-up' }
-        size={16}
-        color="#ffffff"
-      />
-    )}
-  </TouchableOpacity>)
-      }
-    }></FlatList>
+    <View style={styles.horizontalList}>
+      {sortOptions.map(item=>{
+        return (<TouchableOpacity key={item.label} style={styles.sortButton} onPress={() => handleSortChange(item.option)}>
+        <Text style={styles.text} >Sort by {item.label}</Text>
+        {sortOption === item.option && (
+          <Feather
+            name={sortOrderAsc ? 'chevron-down': 'chevron-up' }
+            size={16}
+            color="#ffffff"
+          />
+        )}
+      </TouchableOpacity>)
+      })}
+    </View>
 </View>
-    <View><TextInput
+    <View style={styles.center}><TextInput
           autoCorrect={false}
           value={searchVal}
           onChangeText={handleSearchChange}
           autoCapitalize='none'
           style={styles.input}
+          placeholderTextColor={"white"}
           placeholder="search by name"
          /></View>
-    <View style={styles.box}>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Monthly Earnings:  </Text>
-        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Monthly Spendings:  </Text>
-        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Total: </Text>
-        <Text style={styles.moneyText}>233$</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.summaryText}>Left to Spend: </Text>
-        <Text style={styles.moneyText}>233$</Text>
-      </View>
-    </View>
     
-    <FlatList
-      
-      data={budgets}
-      renderItem={({ item }) => (
-        <BudgetListItem budgetItem={item} refreshSummary={getData} deleteBudget={deleteBudget} />
-      )}
-      keyExtractor={(item, index) => index.toString()}
-    />
+    
+    <View style={styles.listContainer}>
+      {budgets.map(item=> {
+        return <BudgetListItem refreshSummary={getData} deleteBudget={deleteBudget} key={item.id} budgetItem={item}/>
+      })}
+    </View>
   
    
-  </View>):
+  </ScrollView></View>):
   (<View style={styles.spinnerStyle}><SpinnerComponent show={loading}/></View>)
 );
 }
@@ -249,25 +243,31 @@ const styles = StyleSheet.create({
 
   container: {
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    flex:1, 
+    
+    flex:1,
     paddingTop:50
   },
   timeContainer: {
     flexDirection: "row",
     gap: 5,
     marginVertical: 10,
-    zIndex:901
+    zIndex:901,
+    alignContent:"center",
+    justifyContent:"center"
   },
   row: {
-    flexDirection:'row',
-    justifyContent:'space-between'
+    flexDirection:'column',
+    justifyContent:'center',
+    alignItems:"center",
+    
+
+
   },
   summaryText: {
     color: "#ffffff",
     fontSize: 14,
     paddingVertical: 5,
+    fontWeight:"bold"
 
   },
   input: {
@@ -291,7 +291,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#272727',
     borderRadius:5,
     padding:10,
-    margin:5
+    margin:5,
+    alignContent:"center",
+    justifyContent:"center",
+
+    display:"flex",
+    alignSelf:"center",
+    flexDirection:"row"
+    
+   
   },
   plusIconStyle: {
     color: "#ffffff",
@@ -307,10 +315,11 @@ const styles = StyleSheet.create({
   },
   sortContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginVertical: 10,
     gap:10,
     flexWrap:'wrap',
+
     
 
   },
@@ -328,6 +337,24 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#ffffff',
+  },
+
+  horizontalList: {
+    display:"flex",
+    flexDirection:"row",
+    flexWrap:"wrap",
+    gap:5
+  },
+  center: {
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center",
+    flexGrow:0.4,
+    
+  }, 
+
+  listContainer: {
+    alignSelf:"center"
   }
 
   

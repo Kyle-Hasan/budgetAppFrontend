@@ -1,6 +1,6 @@
 // components/BudgetListItem.tsx
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert,Dimensions } from 'react-native';
 import ProgressBar from './ProgressBar'
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useRouter } from 'expo-router';
@@ -11,7 +11,8 @@ export interface budgetItem {
   name:string,
   currentSpent:number,
   total:number,
-  id:string
+  id:string,
+  color:string
 }
 
 interface budgetListItemProps {
@@ -83,7 +84,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     margin: 5,
-    width:'100%'
+    width: "100%",
+    alignSelf:"center"
   },
   topSection: {
     flexDirection: 'row',

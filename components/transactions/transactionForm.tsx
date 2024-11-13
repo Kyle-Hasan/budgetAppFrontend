@@ -200,6 +200,7 @@ import CurrencyInput from "react-native-currency-input";
         style={styles.input}
         keyboardType="numeric"
         placeholder="$0.00"
+        placeholderTextColor={"white"}
       />
             <Text style={styles.label}>Date</Text>
             <DateInput date={transaction.date} setDate={(value:any)=> {setFormData("date",value)}}></DateInput>

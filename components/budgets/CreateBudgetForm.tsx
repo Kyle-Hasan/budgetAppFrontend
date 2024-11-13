@@ -14,6 +14,7 @@ import { useToastController} from '@tamagui/toast';
 import CurrentToast from '@/components/CurrentToast';
 import SpinnerComponent from '../Spinner';
 import CurrencyInput from 'react-native-currency-input';
+import { set } from 'react-datepicker/dist/date_utils';
 
 
 export interface budgetForm {
@@ -84,6 +85,12 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
 
 
     }, [formContextObj?.transactionForm])
+
+    useEffect(()=> {
+      setFormData(budgetForm)
+
+
+    }, [budgetForm])
 
 
 
@@ -180,6 +187,7 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
         style={styles.input}
         keyboardType="numeric"
         placeholder="$0.00"
+        placeholderTextColor={"white"}
       />
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
     { formData.transactions && formData.transactions.length > 0 &&

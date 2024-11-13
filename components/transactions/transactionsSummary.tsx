@@ -110,7 +110,7 @@ const filterAccounts = (text:string)=> {
 } 
 
 const debouncedFilter = useDebounce(filterAccounts,200)
-console.log(debouncedFilter)
+
 
 const handleSearchChange = (text: string) => {
   setSearchVal(text);
@@ -239,6 +239,7 @@ return (
           onChangeText={handleSearchChange}
           autoCapitalize='none'
           style={styles.input}
+          placeholderTextColor={"white"}
           placeholder="search by name"
          />
     <FlatList

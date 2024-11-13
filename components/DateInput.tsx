@@ -3,7 +3,7 @@ import WebDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { newDate } from "react-datepicker/dist/date_utils";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Platform, View,StyleSheet, Text } from "react-native";
+import { Platform, View,StyleSheet, Text,Dimensions } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import './datePicker.css'
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     padding: 10,
     marginVertical: 10,
-    minWidth:200
+    minWidth: Dimensions.get('window').width * 0.35
   },
   label: {
     color: '#ffffff',

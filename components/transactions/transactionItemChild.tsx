@@ -52,13 +52,13 @@ const TransactionItemChild = ({transaction,deleteTransaction,showAccountAndBudge
 
 
     return (<View style={styles.box}>
-    <View style={styles.topSection}><Text style={styles.textStyle}>{transaction.name}</Text>
-          <Text style={styles.alignText}>
-            ${transaction.amount}
-          </Text>
-        </View>
-    <View style={styles.topSection}><Text style={styles.textStyle}>{Moment(transaction.date).format('d MMMM Y')}</Text><Text style={styles.rightText}>{transaction.type}</Text></View>
-    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.textStyle}>{transaction.account?.name}</Text><Text style={styles.rightText}>{transaction.budget?.name}</Text></View>}
+    <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Name:</Text> {transaction.name}</Text></View>
+    <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Account:</Text>  {transaction.amount}</Text></View>
+    <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Date:</Text>  {Moment(transaction.date).format('d MMMM Y')}</Text></View>
+    <View style={styles.topSection}><Text style={styles.rightText}><Text style={styles.boldText}>Type:</Text>  {transaction.type?.toLowerCase()}</Text></View>
+    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Account:</Text> {transaction.account?.name}</Text></View>}
+    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.rightText}><Text style={styles.boldText}>Budget:</Text> : {transaction.budget?.name}</Text></View>}
+    
     <View style={styles.buttonBar}>
       <TouchableOpacity onPress={editNavigate}>
         <MaterialCommunityIcons 
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       padding: 10,
       margin: 5,
-      width:'100%'
+      width:'100%',
+      height:300
     },
     topSection: {
       flexDirection: 'row',
@@ -130,4 +131,8 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       color: "#ffffff",      
     },
+    boldText: {
+      color: "#ffffff",
+      fontWeight:"bold"
+    }
   });

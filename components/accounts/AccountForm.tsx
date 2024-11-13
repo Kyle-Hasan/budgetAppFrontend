@@ -158,6 +158,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
         style={styles.input}
         keyboardType="numeric"
         placeholder="$0.00"
+        placeholderTextColor={"text"}
       />
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
     { formData.transactions && formData.transactions.length > 0 &&
