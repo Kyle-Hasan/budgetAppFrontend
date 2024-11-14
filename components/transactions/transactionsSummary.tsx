@@ -83,7 +83,6 @@ export default function TransactionSummary() {
 
   useFocusEffect(
     useCallback(()=> {
-    formContextObj?.setRefreshTransactionSummary(() => getData);
     getData()
 }, []))
 

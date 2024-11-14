@@ -17,7 +17,7 @@ export interface transaction {
     type?: string | null
 }
 
-interface ParentEntity {
+export interface ParentEntity {
   id:number,
   name:string
 }

@@ -97,7 +97,7 @@ export default function AccountSummary() {
   useFocusEffect(
 
     useCallback(()=>{
-      formContextObj?.setRefreshAccountSummary(() => getData);
+      
 
       getData()
     },[])

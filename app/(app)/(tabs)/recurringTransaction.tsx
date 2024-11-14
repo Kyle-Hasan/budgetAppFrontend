@@ -1,11 +1,11 @@
 
-import TransactionSummary from '@/components/transactions/transactionsSummary';
+import RecurringTransactionSummary from '@/components/recurringTransactions/RecurringTransactionSummary';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 
 const transactionPage = () => {
-  return (<View style={styles.container}><TransactionSummary></TransactionSummary></View>);
+  return (<View style={styles.container}><RecurringTransactionSummary></RecurringTransactionSummary></View>);
 };
 
 const styles = StyleSheet.create({

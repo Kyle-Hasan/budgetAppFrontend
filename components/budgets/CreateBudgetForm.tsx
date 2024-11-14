@@ -122,9 +122,7 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
         console.log(" form data is  " , formData)
         console.log(" response is " , response.data)
         formContextObj?.setBudgetForm(response.data)
-        if(formContextObj?.refreshBudgetSummary) {
-          formContextObj?.refreshBudgetSummary()
-        }
+        
         console.log("budget form context", formContextObj)
         toast.hide()
         toast.show('Successfully saved!', {

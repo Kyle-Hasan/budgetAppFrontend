@@ -2,6 +2,7 @@ import { transaction } from "@/components/transactions/transactionItemChild";
 import React, { ReactNode, useState } from "react";
 import { budgetForm } from "../../components/budgets/CreateBudgetForm";
 import { accountForm } from "@/components/accounts/AccountForm";
+import { RecurringTransaction } from "@/components/recurringTransactions/RecurringTransactionForm";
 
 type FormContextType = {
     transactionForm: transaction | null;
@@ -10,12 +11,9 @@ type FormContextType = {
     setBudgetForm: (form: budgetForm | null) => void;
     accountForm: accountForm | null;
     setAccountForm: (form: accountForm | null) => void;
-    refreshBudgetSummary: Function | null;
-    setRefreshBudgetSummary: (fn: Function) => void;
-    refreshAccountSummary: Function | null;
-    setRefreshAccountSummary: (fn: Function) => void;
-    refreshTransactionSummary: Function | null;
-    setRefreshTransactionSummary: (fn: Function) => void;
+    setRecurringTransactionForm:(form:RecurringTransaction | null) => void;
+    recurringTransactionForm:RecurringTransaction | null
+   
 } | null;
 
 const FormContext = React.createContext<FormContextType>(null);
@@ -24,9 +22,8 @@ const FormProvider = ({ children }: { children: ReactNode }) => {
     const [transactionForm, setTransactionForm] = useState<transaction | null>(null);
     const [budgetForm, setBudgetForm] = useState<budgetForm | null>(null);
     const [accountForm, setAccountForm] = useState<accountForm | null>(null);
-    const [refreshBudgetSummary, setRefreshBudgetSummary] = useState<Function | null>(null);
-    const [refreshAccountSummary,setRefreshAccountSummary] = useState<Function | null>(null)
-    const [refreshTransactionSummary,setRefreshTransactionSummary] = useState<Function | null>(null)
+   
+    const [recurringTransactionForm,setRecurringTransactionForm] = useState<RecurringTransaction | null>(null)
 
     return (
         <FormContext.Provider 
@@ -37,12 +34,9 @@ const FormProvider = ({ children }: { children: ReactNode }) => {
                 setBudgetForm,
                 accountForm,
                 setAccountForm,
-                refreshBudgetSummary,
-                setRefreshBudgetSummary,
-                refreshAccountSummary,
-                setRefreshAccountSummary,
-                refreshTransactionSummary,
-                setRefreshTransactionSummary
+                recurringTransactionForm,
+                setRecurringTransactionForm
+            
             }}
         >
             {children}

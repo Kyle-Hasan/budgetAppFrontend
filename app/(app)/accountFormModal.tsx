@@ -13,7 +13,7 @@ export default function accountFormModal() {
   const [accountForm,setAccountForm] = useState<accountForm>({
     id:-1,
     name:"",
-    startingBalance: "",
+    startingBalance:0,
     transactions: []
   })
   const formContextObj = useContext(FormContext)

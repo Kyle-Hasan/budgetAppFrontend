@@ -48,6 +48,12 @@ export default function AppLayout() {
           presentation: 'modal',
         }}
       />
+      <Stack.Screen
+        name="recurringTransactionFormModal"
+        options={{
+          presentation: 'modal',
+        }}
+      />
   </Stack>
   </GestureHandlerRootView>;
 }

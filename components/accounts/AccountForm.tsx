@@ -97,11 +97,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
 
         setFormData(response.data)
      
-        formContextObj?.setAccountForm(response.data)
-
-        if(formContextObj?.refreshAccountSummary) {
-          formContextObj?.refreshAccountSummary()
-        }
+     
 
         toast.show('Successfully saved!', {
           message: "Budget Saved",

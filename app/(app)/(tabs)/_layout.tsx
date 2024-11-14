@@ -62,6 +62,18 @@ export default function TabLayout() {
           ),
         }}
       />
+
+<Tabs.Screen
+        name="recurringTransaction"
+        
+        options={{
+          headerShown:false,
+          title: "Recurring Transactions",
+          tabBarIcon: ({ color, focused }) => (
+            <FontAwesome6 name="money-bill-transfer" size={24} color="white" />
+          ),
+        }}
+      />
       
       <Tabs.Screen
       
@@ -87,6 +99,16 @@ export default function TabLayout() {
         href: null,
       }}
     />
+
+<Tabs.Screen
+      
+      name="recurringTransactions/[id]"
+      options={{
+        headerShown:false,
+        href: null,
+      }}
+    />
+
 
 <Tabs.Screen
       

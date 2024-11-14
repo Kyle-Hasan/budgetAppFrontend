@@ -5,25 +5,21 @@ import { StyleSheet, Text, View } from 'react-native';
 import { FormContext } from '../context/FormContex';
 import { Link, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import CreateBudgetForm, {budgetForm} from '../../components/budgets/CreateBudgetForm';
+import RecurringTransactionForm, { RecurringTransaction } from '@/components/recurringTransactions/RecurringTransactionForm';
 
-export default function budgetFormModal() {
+
+export default function recurringTransactionFormModal() {
   const isPresented = router.canGoBack()
-  const [budgetForm,setBudgetForm] = useState<budgetForm>({
-    id:-1,
-    name:"",
-    amount: 0,
-    transactions: []
-  })
+  const [recurringTransactionForm,setRecurringTransactionForm] = useState<RecurringTransaction>({ name: "", id: -1, amount: 0, frequency: "Monthly", transactionType: "EXPENSE", account: null, budget: null })
   const formContextObj = useContext(FormContext)
   useEffect(()=> {
-    formContextObj?.setBudgetForm(budgetForm)
+    formContextObj?.setRecurringTransactionForm(recurringTransactionForm)
   },[])
   
   return (
     <View style={styles.container}>
       {isPresented && <Link href="../" style={styles.backContainer}><Feather style={styles.backIcon} name="arrow-left"></Feather><Text style={styles.textStyle}>Go Back</Text></Link>}
-      <CreateBudgetForm budgetForm={budgetForm}></CreateBudgetForm>
+      <RecurringTransactionForm recurringTransactionProp={recurringTransactionForm} ></RecurringTransactionForm>
     </View>
   );
 }

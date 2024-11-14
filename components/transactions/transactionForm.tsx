@@ -41,11 +41,7 @@ import CurrencyInput from "react-native-currency-input";
     const [transaction,setTransaction] = useState<transaction>({name:'',id:1,amount:0,date:'',account:null,budget:null,type:"Expense"})
     const [budgets,setBudgets] = useState<any [] | null>(null)
     const [accounts,setAccounts] = useState<any[] | null>(null)
-  
-    const [openDatePicker, setOpenDatePicker] = useState(false)
-
-   
-  const [defaultType,setDefaultType] = useState<{label:string} | null | undefined>(null)
+    const [defaultType,setDefaultType] = useState<{label:string} | null | undefined>(null)
     useEffect(
       ()=> {
         toast.hide()
@@ -139,9 +135,7 @@ import CurrencyInput from "react-native-currency-input";
           }
           
         })
-        if(formContextObj?.refreshTransactionSummary) {
-          formContextObj?.refreshTransactionSummary()
-        }
+      
         setLoading(false)
       }
 

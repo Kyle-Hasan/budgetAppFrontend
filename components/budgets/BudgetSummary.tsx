@@ -92,10 +92,7 @@ export default function BudgetSummary() {
   
   useFocusEffect(
     useCallback(()=>{
-      console.log("trigger useffect")
-
-    formContextObj?.setRefreshBudgetSummary(() => getData);
-
+  
     getData()
 
     }, [])
