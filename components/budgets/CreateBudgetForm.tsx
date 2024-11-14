@@ -176,7 +176,7 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
           style={styles.input}
           value={formData.name}
           onChangeText={(text) => setFormData({ ...formData, name: text })}/>
-        <Text style={styles.label}>Amount</Text>
+        <Text style={styles.label}>Monthly Limit</Text>
         <CurrencyInput
         value={formData.amount}
         onChangeValue={(value)=> setFormData({...formData,amount:value})}

@@ -1,14 +1,20 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput, Dimensions} from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 
 import api from "@/app/api/api";
-import { Href, useRouter } from "expo-router";
+import { Href, useFocusEffect, useRouter } from "expo-router";
 import { FormContext } from "@/app/context/FormContex";
 import SpinnerComponent from "../Spinner";
 import TransactionItemChild, { transaction } from "./transactionItemChild";
 import { useDebounce } from "@/hooks/useDebounce";
 import DateFilter from "../DateFilter";
+
+interface TransactionPageResponse {
+  transactions:transaction[],
+  totalDeposited:number,
+  totalSpent:number
+}
 
 export default function TransactionSummary() {
 
@@ -17,7 +23,7 @@ export default function TransactionSummary() {
   const [loading,setLoading] = useState(false)
 
   
-  const [transactions,setTransactions] = useState<transaction[]>([])
+  const [transactionPageResponse,setTransactionPageResponse] = useState<TransactionPageResponse>({transactions:[],totalDeposited:0,totalSpent:0})
   const [displayTransactions,setDisplayTransactions] = useState<transaction[]>([])
 
   const today = new Date();
@@ -37,7 +43,7 @@ export default function TransactionSummary() {
   const [numColumns, setNumColumns] = useState(getColumnCount());
 
   const sortOptions = [{label:"date",option:"date"},{label:"name",option:"name"}, 
-    {label:"amount",  option:"amount"}, {label:"budget",  option:"budget"}, {label:"account",  option:"account"}]
+    {label:"amount",  option:"amount"}]
 
 
 
@@ -63,23 +69,24 @@ export default function TransactionSummary() {
         endDate:endDateStr
       }
     })
-     const data  = response.data
-     setTransactions(data)
+     const data:TransactionPageResponse  = response.data
+     setTransactionPageResponse(data)
      setLoading(false)
-     sortTransactions(sortOption,data)
+     sortTransactions(sortOption,data.transactions)
     }
     catch(error) {
-      console.log("error")
+      console.error(error)
       setLoading(false)
     }
     }
   
 
-  
-  useEffect(()=> {
+  useFocusEffect(
+    useCallback(()=> {
     formContextObj?.setRefreshTransactionSummary(() => getData);
     getData()
-}, [])
+}, []))
+
 
 
 const goToTransactionCreate = ()=> {
@@ -103,10 +110,10 @@ const [searchVal,setSearchVal] = useState("")
 const filterAccounts = (text:string)=> {
   
   if(text.length == 0) {
-    setDisplayTransactions(transactions)
+    setDisplayTransactions(transactionPageResponse.transactions)
   }
   
-  setDisplayTransactions(transactions.filter(x=> x.name.toLowerCase().includes(text.toLowerCase())))
+  setDisplayTransactions(transactionPageResponse.transactions.filter(x=> x.name.toLowerCase().includes(text.toLowerCase())))
 } 
 
 const debouncedFilter = useDebounce(filterAccounts,200)
@@ -192,13 +199,14 @@ const handleSortChange = (option:string) => {
 
 const filterByType = (expense:boolean)=> {
   
+  
   if(expense) {
-    const filtered = transactions.filter(x=> x.type === "EXPENSE")
+    const filtered = transactionPageResponse.transactions.filter(x=> x.type === "EXPENSE")
     sortTransactions(sortOption,filtered)
     
   }
   else {
-    const filtered = transactions.filter(x=> x.type === "INCOME")
+    const filtered = transactionPageResponse.transactions.filter(x=> x.type === "INCOME")
     sortTransactions(sortOption,filtered)
 
   }
@@ -212,6 +220,17 @@ return (
       <TouchableOpacity onPress={goToTransactionCreate}>
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
+    </View>
+    <View style={styles.box}>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Total Spendings:  </Text>
+        <Text style={styles.moneyText}>${transactionPageResponse.totalSpent}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Total Deposited:  </Text>
+        <Text style={styles.moneyText}>${transactionPageResponse.totalDeposited}</Text>
+      </View>
+     
     </View>
     <View style={styles.timeContainer}>
       <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
@@ -231,6 +250,18 @@ return (
   </TouchableOpacity>)
       }
     }></FlatList>
+    <TouchableOpacity style={styles.sortButton} onPress={() => filterByType(true)}>
+    <Text style={styles.text} >Filter by expense</Text>
+   
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.sortButton} onPress={() =>  filterByType(false)}>
+    <Text style={styles.text} >Filter by income</Text>
+    
+  </TouchableOpacity>
+  <TouchableOpacity style={styles.sortButton} onPress={() => { setDisplayTransactions(transactionPageResponse.transactions)}}>
+    <Text style={styles.text} >Reset Filter</Text>
+    
+  </TouchableOpacity>
 </View>
 
     <TextInput
@@ -326,7 +357,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
-    gap:10,
+    gap:5,
     flexWrap:'wrap',
 
   },

@@ -18,6 +18,18 @@ interface PieChartViewProps {
 }
 
 const PieChartView: React.FC<PieChartViewProps> = ({ pieChartData }) => {
+
+    function getRandomColor(): string {
+        const minBrightness = 40;
+        
+        const red = Math.floor(Math.random() * (256 - minBrightness) + minBrightness);
+        const green = Math.floor(Math.random() * (256 - minBrightness) + minBrightness);
+        const blue = Math.floor(Math.random() * (256 - minBrightness) + minBrightness);
+      
+        
+        return "#"+ ((1 << 24) + (red << 16) + (green << 8) + blue).toString(16).slice(1)
+    };
+      
     const [data, setData] = useState<PieChartDataFormat[]>([]);
 
    
@@ -102,13 +114,7 @@ const PieChartView: React.FC<PieChartViewProps> = ({ pieChartData }) => {
     );
 };
 
-// Utility function to generate random colors
-function getRandomColor(): string {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
-    return color;
-}
+
 
 const styles = StyleSheet.create({
     text: { color: "white" },

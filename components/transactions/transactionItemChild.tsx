@@ -53,7 +53,7 @@ const TransactionItemChild = ({transaction,deleteTransaction,showAccountAndBudge
 
     return (<View style={styles.box}>
     <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Name:</Text> {transaction.name}</Text></View>
-    <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Account:</Text>  {transaction.amount}</Text></View>
+    <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Amount:</Text>  ${transaction.amount}</Text></View>
     <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Date:</Text>  {Moment(transaction.date).format('d MMMM Y')}</Text></View>
     <View style={styles.topSection}><Text style={styles.rightText}><Text style={styles.boldText}>Type:</Text>  {transaction.type?.toLowerCase()}</Text></View>
     {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Account:</Text> {transaction.account?.name}</Text></View>}
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
       borderRadius: 5,
       padding: 10,
       margin: 5,
-      width:'100%',
+      width:500,
       height:300
     },
     topSection: {

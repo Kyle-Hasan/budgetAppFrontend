@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView, TextInput, Dimensions } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import BudgetListItem, { budgetItem } from "./BudgetListItem";
 import api from "@/app/api/api";
-import { Href, useRouter } from "expo-router";
+import { Href, useFocusEffect, useRouter } from "expo-router";
 import { FormContext } from "@/app/context/FormContex";
 import { budgetForm } from "@/components/budgets/CreateBudgetForm";
 import SpinnerComponent from "../Spinner";
@@ -90,15 +90,17 @@ export default function BudgetSummary() {
   
 
   
-  useEffect(()=> {
-    
-    console.log("trigger useffect")
+  useFocusEffect(
+    useCallback(()=>{
+      console.log("trigger useffect")
 
     formContextObj?.setRefreshBudgetSummary(() => getData);
 
     getData()
 
-}, [])
+    }, [])
+    
+)
 
 const goToBudgetCreate = ()=> {
   const newForm:budgetForm  = {name:'',id:-1,transactions:[],amount:0}
@@ -183,8 +185,8 @@ return (
     </View>
     <View style={styles.box}>
       <View style={styles.row}>
-        <Text style={styles.summaryText}>Total Spendings:  </Text>
-        <Text style={styles.moneyText}>{budgetPageInfo.totalSpent}$</Text>
+        <Text style={styles.summaryText}>Total Expenses:  </Text>
+        <Text style={styles.moneyText}>${budgetPageInfo.totalSpent}</Text>
       </View>
      
     </View>
@@ -259,9 +261,6 @@ const styles = StyleSheet.create({
     flexDirection:'column',
     justifyContent:'center',
     alignItems:"center",
-    
-
-
   },
   summaryText: {
     color: "#ffffff",

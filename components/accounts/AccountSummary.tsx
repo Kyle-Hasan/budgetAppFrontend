@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList,ScrollView, TextInput,Dimensions } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 
 import api from "@/app/api/api";
-import { Href, useRouter } from "expo-router";
+import { Href, useFocusEffect, useRouter } from "expo-router";
 import { FormContext } from "@/app/context/FormContex";
 import { budgetForm } from "@/components/budgets/CreateBudgetForm";
 import AccountListItem from "./AccountListItem";
@@ -25,7 +25,9 @@ export interface AccountItem {
 }
 
 interface AccountPageInfo {
-  accounts: AccountItem[]
+  accounts: AccountItem[],
+  totalDeposited:number,
+  totalBalance:number
 }
 
 export default function AccountSummary() {
@@ -35,7 +37,7 @@ export default function AccountSummary() {
   const [loading,setLoading] = useState(false)
 
   
-  const [accountPageInfo,setAccountPageInfo] = useState<AccountPageInfo>({accounts:[]})
+  const [accountPageInfo,setAccountPageInfo] = useState<AccountPageInfo>({accounts:[],totalDeposited:0,totalBalance:0})
   const [accounts,setAccounts] = useState<AccountItem[]>([])
 
   const today = new Date();
@@ -80,23 +82,27 @@ export default function AccountSummary() {
         endDate:endDateStr
       }
      })
-     const data:any  = response.data
-     setAccountPageInfo({...accountPageInfo,accounts:data})
+     const data:AccountPageInfo  = response.data
+     setAccountPageInfo(data)
+     
      setLoading(false)
-     sortAccounts(sortOption,data)
+     sortAccounts(sortOption,data.accounts)
     }
     catch(error) {
-      console.log("error")
+      console.error(error)
       setLoading(false)
     }
     }
   
-  useEffect(()=> {
-    formContextObj?.setRefreshAccountSummary(() => getData);
+  useFocusEffect(
 
-    getData()
+    useCallback(()=>{
+      formContextObj?.setRefreshAccountSummary(() => getData);
 
-}, [])
+      getData()
+    },[])
+  
+)
 
 
 const deleteAccount = async(id:number)=> {
@@ -181,6 +187,17 @@ return (
       <TouchableOpacity onPress={goToAccountCreate}>
         <Feather name="plus" style={styles.plusIconStyle} />
       </TouchableOpacity>
+    </View>
+    <View style={styles.box}>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Total Deposits:  </Text>
+        <Text style={styles.moneyText}>${accountPageInfo.totalDeposited}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.summaryText}>Total Balance:  </Text>
+        <Text style={styles.moneyText}>${accountPageInfo.totalBalance}</Text>
+      </View>
+     
     </View>
     <View style={styles.timeContainer}>
     <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={getData}></DateFilter>
