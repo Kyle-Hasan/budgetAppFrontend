@@ -100,7 +100,7 @@ export default function BudgetSummary() {
 )
 
 const goToBudgetCreate = ()=> {
-  const newForm:budgetForm  = {name:'',id:-1,transactions:[],amount:0}
+  const newForm:budgetForm  = {name:'',id:-1,transactions:[],amount:0,icon:null}
   formContextObj?.setBudgetForm(newForm)
 
   router.push('/budgetFormModal' as Href<string>)

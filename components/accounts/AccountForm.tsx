@@ -1,10 +1,10 @@
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, FlatList, ScrollView } from 'react-native';
 
 import { Feather } from '@expo/vector-icons';
 
-import { Href, useRouter } from 'expo-router';
+import { Href, useFocusEffect, useRouter } from 'expo-router';
 
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
@@ -13,6 +13,7 @@ import { useToastController } from '@tamagui/toast';
 import CurrentToast from '../CurrentToast';
 import SpinnerComponent from '../Spinner';
 import CurrencyInput from 'react-native-currency-input';
+import IconPicker from '../IconPicker';
 
 
 export interface accountForm {
@@ -20,13 +21,12 @@ export interface accountForm {
     startingBalance:number | null,
     id:number,
     transactions:transaction[]
+    icon ?:string
 }
 
-interface accountFormProps {
-    accountForm:accountForm
-}
 
-const CreateAmountForm = ({accountForm}:accountFormProps) => {
+
+const CreateAmountForm = () => {
 
 
     const toast = useToastController();
@@ -35,7 +35,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
     const [loading,setLoading] = useState(false)
 
 
-    const [formData,setFormData] = useState<accountForm>(accountForm)
+    const [formData,setFormData] = useState<accountForm>({name:"",startingBalance:0,id:-1,transactions:[],icon:""})
     console.log("form data render", formData)
 
 
@@ -57,7 +57,7 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
 
     }
     // get new transactions that shoulded added on this one
-    useEffect(()=> {
+    useFocusEffect(useCallback(()=> {
       toast.hide()
       console.log(" trigger use effect ")
       if(formContextObj?.transactionForm?.id == -1 && formContextObj?.transactionForm?.name) {
@@ -71,8 +71,14 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
       formContextObj?.setTransactionForm(null)
 
 
-    }, [formContextObj?.transactionForm])
+    }, [formContextObj?.transactionForm]))
 
+    useFocusEffect(useCallback(()=> {
+      if(formContextObj?.accountForm) {
+        setFormData({...formContextObj?.accountForm})
+        }
+
+    }, [formContextObj?.accountForm]))
 
     const handleSubmit = async() => {
       try{
@@ -130,6 +136,12 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
       
       setLoading(false)
     }
+
+    const changeIcon = (icon:string)=> {
+     
+      setFormData({...formData,icon})
+      console.log("icon changed to " + icon)
+    }
   
   return (
      <View style={styles.container}>
@@ -157,8 +169,9 @@ const CreateAmountForm = ({accountForm}:accountFormProps) => {
         placeholderTextColor={"text"}
       />
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
+    <View><IconPicker onSelect={changeIcon} selectedIcon={formData.icon ? formData.icon : null}></IconPicker></View>
     { formData.transactions && formData.transactions.length > 0 &&
-    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10, borderColor:'red',borderWidth:1,minWidth:200}}>
+    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10,minWidth:200}}>
       
     <FlatList
      ListEmptyComponent={() => <View style={{ height: 0}} />}

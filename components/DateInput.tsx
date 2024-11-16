@@ -29,7 +29,7 @@ const DateInput = ({date,setDate}:DateInputProps)=> {
           onTouchCancel={()=> {setOpenDatePicker(false)}}
           mode='date'
           is24Hour={true}
-        />}</View>)):<WebDatePicker calendarIconClassName="calendarIcon" dateFormat="yyyy/MM/dd" value={date} onChange={(date:Date | null)=> {setDate(date?.toISOString().split('T')[0])}} className="custom-datepicker"></WebDatePicker>}</View>)
+        />}</View>)):<WebDatePicker calendarIconClassName="calendarIcon"  popperClassName="custom-datepicker" dateFormat="yyyy/MM/dd" value={date} onChange={(date:Date | null)=> {setDate(date?.toISOString().split('T')[0])}} className="custom-datepicker"></WebDatePicker>}</View>)
 
 }
 
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     padding: 10,
     marginVertical: 10,
-    minWidth: Dimensions.get('window').width * 0.35
+
+    minWidth: Dimensions.get('window').width * 0.50
   },
   label: {
     color: '#ffffff',
@@ -52,7 +53,8 @@ const styles = StyleSheet.create({
   flex: {
     display:"flex",
     flexDirection:"row",
-    gap:5
+    gap:5,
+    zIndex:999
   }
  
 });

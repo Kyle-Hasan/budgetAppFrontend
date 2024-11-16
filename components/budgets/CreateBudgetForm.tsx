@@ -1,10 +1,10 @@
 // components/BudgetListItem.tsx
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Button, FlatList, ScrollView } from 'react-native';
 
 import { Feather } from '@expo/vector-icons';
 
-import { Href, useRouter } from 'expo-router';
+import { Href, useFocusEffect, useRouter } from 'expo-router';
 
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
@@ -15,23 +15,25 @@ import CurrentToast from '@/components/CurrentToast';
 import SpinnerComponent from '../Spinner';
 import CurrencyInput from 'react-native-currency-input';
 import { set } from 'react-datepicker/dist/date_utils';
+import IconPicker from '../IconPicker';
 
 
 export interface budgetForm {
     name:string,
     amount:number | null,
     id:number,
-    transactions:transaction[]
+    transactions:transaction[],
+    icon:string | null
 }
 
 interface budgetFormProps {
-    budgetForm:budgetForm,
+
     refreshSummary?: Function
 }
 
 
 
-const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
+const CreateBudgetForm = ({refreshSummary}:budgetFormProps) => {
 
 
     
@@ -43,7 +45,7 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
     const formContextObj = useContext(FormContext)
 
 
-    const [formData,setFormData] = useState<budgetForm>(budgetForm)
+    const [formData,setFormData] = useState<budgetForm>({name:"",amount:0,id:-1,transactions:[],icon:""})
   //  console.log("form data render", formData)
 
     if (!formData) {
@@ -70,9 +72,10 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
 
     }
     // get new transactions that shoulded added on this one
-    useEffect(()=> {
+    useFocusEffect(useCallback(()=> {
       toast.hide()
       console.log(" trigger use effect ")
+      
       if(formContextObj?.transactionForm?.id == -1 && formContextObj?.transactionForm?.name) {
       
         const newTransactions = [...formData.transactions,formContextObj?.transactionForm]
@@ -84,13 +87,15 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
       formContextObj?.setTransactionForm(null)
 
 
-    }, [formContextObj?.transactionForm])
+    }, [formContextObj?.transactionForm]))
 
-    useEffect(()=> {
-      setFormData(budgetForm)
+    useFocusEffect(useCallback(()=> {
+      if(formContextObj?.budgetForm) {
+      setFormData({...formContextObj?.budgetForm})
+      }
 
 
-    }, [budgetForm])
+    }, [formContextObj?.budgetForm]))
 
 
 
@@ -160,6 +165,12 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
       
       setLoading(false)
     }
+
+    const changeIcon = (icon:string)=> {
+      
+      setFormData({...formData,icon})
+      console.log("icon changed to " + icon)
+    }
     
     
 
@@ -187,6 +198,7 @@ const CreateBudgetForm = ({budgetForm,refreshSummary}:budgetFormProps) => {
         placeholder="$0.00"
         placeholderTextColor={"white"}
       />
+    <View><IconPicker onSelect={changeIcon} selectedIcon={formData.icon ? formData.icon : null}></IconPicker></View>
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
     { formData.transactions && formData.transactions.length > 0 &&
     (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10,minWidth:200}}>

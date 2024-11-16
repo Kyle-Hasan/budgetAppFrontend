@@ -13,7 +13,8 @@ export default function budgetFormModal() {
     id:-1,
     name:"",
     amount: 0,
-    transactions: []
+    transactions: [],
+    icon:null
   })
   const formContextObj = useContext(FormContext)
   useEffect(()=> {
@@ -23,7 +24,7 @@ export default function budgetFormModal() {
   return (
     <View style={styles.container}>
       {isPresented && <Link href="../" style={styles.backContainer}><Feather style={styles.backIcon} name="arrow-left"></Feather><Text style={styles.textStyle}>Go Back</Text></Link>}
-      <CreateBudgetForm budgetForm={budgetForm}></CreateBudgetForm>
+      <CreateBudgetForm></CreateBudgetForm>
     </View>
   );
 }

@@ -1,34 +1,44 @@
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 
 
 import { View, StyleSheet } from 'react-native';
 
-import { useGlobalSearchParams } from 'expo-router';
+import { useFocusEffect, useGlobalSearchParams, useLocalSearchParams } from 'expo-router';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
 import { transaction } from '@/components/transactions/transactionItemChild';
 import TransactionForm from "@/components/transactions/transactionForm"
 
 const transactionPage = () => {
-  const glob = useGlobalSearchParams();
+  
   const formContextObj = useContext(FormContext)
+  const glob = useGlobalSearchParams();
+  const [id,setId] = useState()
+  console.log(glob)
+  useFocusEffect(
+    useCallback(()=> {
+      const getData = async()=> {
+        
+        
+        const id = glob.id
+        console.log(glob)
+        if(!id) return
+       
+        const response = await api.get("/transactions/"+id)
+        console.log(response.data)
+        
+        formContextObj?.setTransactionForm(response.data)
 
+        return ()=> {
 
+        }        
+      }
+      getData()
+}, [glob.id]))
 
-  useEffect(()=> {
-    const getData = async()=> {
-      const id = glob.id
-     
-      const response = await api.get("/transactions/"+id)
-    
-      
-      formContextObj?.setTransactionForm(response.data)
-      
-    }
-    getData()
-  },[])
+  
 
 
 

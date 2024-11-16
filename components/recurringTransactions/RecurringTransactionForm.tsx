@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useCallback } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import Dropdown from "../Dropdown";
 import api from "@/app/api/api";
@@ -6,8 +6,10 @@ import { FormContext } from "@/app/context/FormContex";
 import { useToastController } from "@tamagui/toast";
 import SpinnerComponent from "../Spinner";
 import CurrencyInput from "react-native-currency-input";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { ParentEntity } from "../transactions/transactionItemChild";
+import CurrentToast from '@/components/CurrentToast';
+import IconPicker from "../IconPicker";
 
 const frequencyOptions = [
   { label: 'Weekly', value: 'Weekly' },
@@ -29,7 +31,7 @@ export interface RecurringTransaction {
     account:ParentEntity | null,
     budget: ParentEntity | null,
     name:string,
-    
+    icon?:string
     
 }
 
@@ -47,11 +49,8 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
   const [budgets, setBudgets] = useState<any[] | null>(null);
   const [accounts, setAccounts] = useState<any[] | null>(null);
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
     toast.hide();
-
-   
-
     const fetchBudgetsAndAccounts = async () => {
       try {
         const budgetResponse = await api.get('/budgets/budgetSelections');
@@ -64,13 +63,13 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
     };
 
     fetchBudgetsAndAccounts();
-  }, []);
+  }, []));
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const body = { ...recurringTransaction, amount: recurringTransaction.amount, frequency: recurringTransaction.frequency, type: recurringTransaction.transactionType };
-      debugger
+      const body = { ...recurringTransaction, amount: recurringTransaction.amount, frequency: recurringTransaction.frequency, transactionType: recurringTransaction.transactionType ? recurringTransaction.transactionType.toUpperCase() : null };
+     
       const response = recurringTransaction.id !== -1
         ? await api.patch("/recurring", body)
         : await api.post("/recurring", body);
@@ -79,7 +78,7 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
 
       toast.show("Successfully saved!", { message: "Recurring Transaction Saved", native: false, customData: { color: "green" } });
       
-      router.back();
+      
     } catch (e) {
       toast.show("Failed", { message: "Error saving transaction", native: false, customData: { color: "red" } });
     } finally {
@@ -91,7 +90,14 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
   const budgetChanged = (budget: any) => setRecurringTransaction((prev) => ({ ...prev, budget }));
   const accountChanged = (account: any) => setRecurringTransaction((prev) => ({ ...prev, account }));
   const frequencyChanged = (frequency: { label: string }) => setRecurringTransaction((prev) => ({ ...prev, frequency: frequency.label }));
-  const typeChanged = (type: { label: string }) => setRecurringTransaction((prev) => ({ ...prev, type: type.label }));
+  const typeChanged = (type: { label: string }) => setRecurringTransaction((prev) => ({ ...prev, transactionType: type.label == "Income" ? "INCOME": "EXPENSE" }));
+
+
+  const changeIcon = (icon:string)=> {
+      
+    setFormData("icon",icon)
+    
+  }
 
   return (
     <View style={styles.container}>
@@ -113,30 +119,34 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
       />
 
       {budgets && (
-        <View style={styles.dropdownContainer}>
+        <View style={styles.budgetContainer}>
           <Text style={styles.label}>Budget</Text>
           <Dropdown changeSelection={budgetChanged} defaultSelection={recurringTransaction.budget} items={budgets} keyName="id" labelName="name" />
         </View>
       )}
 
       {accounts && (
-        <View style={styles.dropdownContainer}>
+        <View style={styles.accountContainer}>
           <Text style={styles.label}>Account</Text>
           <Dropdown changeSelection={accountChanged} defaultSelection={recurringTransaction.account} items={accounts} keyName="id" labelName="name" />
         </View>
       )}
 
-      <View style={styles.dropdownContainer}>
+      <View style={styles.frequencyContainer}>
         <Text style={styles.label}>Frequency</Text>
         <Dropdown changeSelection={frequencyChanged} defaultSelection={{ label: recurringTransaction.frequency, value: recurringTransaction.frequency }} items={frequencyOptions} keyName="value" labelName="label" />
       </View>
 
-      <View style={styles.dropdownContainer}>
+      <View style={styles.typeContainer}>
         <Text style={styles.label}>Transaction Type</Text>
         <Dropdown changeSelection={typeChanged} defaultSelection={{ label: recurringTransaction.transactionType, value: recurringTransaction.transactionType }} items={transactionTypeOptions} keyName="value" labelName="label" />
       </View>
 
+      <View><IconPicker onSelect={changeIcon} selectedIcon={recurringTransaction.icon ? recurringTransaction.icon : null}></IconPicker></View>
+
+
       <Button title="Submit" onPress={handleSubmit} color="#6200ea" disabled={loading} />
+      <CurrentToast />
       <SpinnerComponent show={loading} />
     </View>
   );
@@ -168,12 +178,34 @@ const styles = StyleSheet.create({
     borderColor: '#444',
     padding: 10,
     marginVertical: 10,
-    width: '100%',
+    width: 200
   },
   dropdownContainer: {
     marginBottom: 10,
-    width: '100%',
+    width: 200
   },
+  budgetContainer: {
+    marginBottom: 10,
+    width: 200,
+    zIndex:900
+  },
+  accountContainer: {
+    marginBottom:10,
+    width:200,
+    zIndex:899
+  },
+  frequencyContainer: {
+    marginBottom:10,
+    width:200,
+    zIndex:898
+
+  },
+  typeContainer: {
+    marginBottom:10,
+    width:200,
+    zIndex:897
+
+  }
 });
 
 export default RecurringTransactionForm;

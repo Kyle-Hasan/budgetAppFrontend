@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {Platform, View, StyleSheet,Text, Button, TextInput   } from "react-native";
 import { transaction } from "./transactionItemChild";
 
@@ -12,7 +12,7 @@ import { useContext } from "react";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import api from "@/app/api/api";
 import { FormContext } from "@/app/context/FormContex";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { useToastController } from "@tamagui/toast";
 import CurrentToast from "../CurrentToast";
 import SpinnerComponent from "../Spinner";
@@ -38,11 +38,12 @@ import CurrencyInput from "react-native-currency-input";
 
     const router = useRouter()
     const formContextObj = useContext(FormContext)
-    const [transaction,setTransaction] = useState<transaction>({name:'',id:1,amount:0,date:'',account:null,budget:null,type:"Expense"})
+    const [transaction,setTransaction] = useState<transaction>({name:'',id:1,amount:0,date:'',account:null,budget:null,type:null})
     const [budgets,setBudgets] = useState<any [] | null>(null)
     const [accounts,setAccounts] = useState<any[] | null>(null)
     const [defaultType,setDefaultType] = useState<{label:string} | null | undefined>(null)
-    useEffect(
+    useFocusEffect(
+      useCallback(
       ()=> {
         toast.hide()
         let transactionData = formContextObj?.transactionForm
@@ -99,9 +100,7 @@ import CurrencyInput from "react-native-currency-input";
 
         getBudgets()
         getAccounts()
-
-
-    }, [])
+      },[formContextObj?.transactionForm]))
 
     const submit = async()=>{
       try {
@@ -175,7 +174,7 @@ import CurrencyInput from "react-native-currency-input";
     }
 
     const typeChanged = (type:{label:string})=> {
-      setTransaction(prev => ({...prev,type:type.label.toUpperCase()}))
+      setTransaction(prev => ({...prev,type:type ? type.label.toUpperCase() : null}))
     }
 
 

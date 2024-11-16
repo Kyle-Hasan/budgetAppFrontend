@@ -10,7 +10,7 @@ import RecurringTransactionForm, { RecurringTransaction } from '@/components/rec
 
 export default function recurringTransactionFormModal() {
   const isPresented = router.canGoBack()
-  const [recurringTransactionForm,setRecurringTransactionForm] = useState<RecurringTransaction>({ name: "", id: -1, amount: 0, frequency: "Monthly", transactionType: "EXPENSE", account: null, budget: null })
+  const [recurringTransactionForm,setRecurringTransactionForm] = useState<RecurringTransaction>({ name: "", id: -1, amount: 0, frequency: "Monthly", transactionType: "Expense", account: null, budget: null })
   const formContextObj = useContext(FormContext)
   useEffect(()=> {
     formContextObj?.setRecurringTransactionForm(recurringTransactionForm)

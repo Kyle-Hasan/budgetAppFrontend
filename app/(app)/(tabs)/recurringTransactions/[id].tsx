@@ -1,11 +1,11 @@
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 
 
 import { View, StyleSheet } from 'react-native';
 
-import { useGlobalSearchParams } from 'expo-router';
+import { useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
 import RecurringTransactionForm, { RecurringTransaction } from '@/components/recurringTransactions/RecurringTransactionForm';
@@ -18,23 +18,20 @@ const recurringTransactionPage = () => {
   const [recurringTransaction,setRecurringTransaction] = useState<RecurringTransaction | null>(null)
 
 
-  useEffect(()=> {
-    const getData = async()=> {
-  
-      
-      const id = glob.id
+
+  useFocusEffect(
+    useCallback(()=> {
+      const getData = async()=> {
+        const id = glob.id
 
       if(!id) return
-
-     
-     
       const response = await api.get("/recurring/"+id)
       console.log("trigger use effect paretn",response.data)
       setRecurringTransaction({ ...response.data });
-      
-    }
-    getData()
-  },[glob.id])
+        
+      }
+      getData()
+}, [glob.id]))
 
 
 

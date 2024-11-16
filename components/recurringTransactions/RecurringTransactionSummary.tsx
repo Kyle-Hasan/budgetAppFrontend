@@ -21,11 +21,7 @@ export default function RecurringTransactionSummary() {
   const formContextObj = useContext(FormContext);
   const [loading, setLoading] = useState(false);
 
-  const [recurringTransactionPageResponse, setRecurringTransactionPageResponse] = useState<RecurringTransactionPageResponse>({
-    transactions: [],
-    totalRecurringIncome: 0,
-    totalRecurringExpense: 0,
-  });
+  const [recurringTransactions,setRecurringTransaction] = useState<RecurringTransaction[]>([]);
   const [displayTransactions, setDisplayTransactions] = useState<RecurringTransaction[]>([]);
 
   const [sortOption, setSortOption] = useState("frequency");
@@ -49,10 +45,10 @@ export default function RecurringTransactionSummary() {
     setLoading(true);
     try {
       const response = await api.get("/recurring");
-      const data: RecurringTransactionPageResponse = response.data;
-      setRecurringTransactionPageResponse(data);
+      const data: RecurringTransaction[] = response.data;
+      setRecurringTransaction(data)
       setLoading(false);
-      sortTransactions(sortOption, data.transactions);
+      sortTransactions(sortOption, data);
     } catch (error) {
       console.error(error);
       setLoading(false);
@@ -83,10 +79,10 @@ export default function RecurringTransactionSummary() {
 
   const filterTransactions = (text: string) => {
     if (text.length === 0) {
-      setDisplayTransactions(recurringTransactionPageResponse.transactions);
+      setDisplayTransactions(recurringTransactions);
     }
     setDisplayTransactions(
-      recurringTransactionPageResponse.transactions.filter((x) => x.name.toLowerCase().includes(text.toLowerCase()))
+      recurringTransactions.filter((x) => x.name.toLowerCase().includes(text.toLowerCase()))
     );
   };
 
@@ -127,10 +123,10 @@ export default function RecurringTransactionSummary() {
 
   const filterByType = (expense: boolean) => {
     if (expense) {
-      const filtered = recurringTransactionPageResponse.transactions.filter((x) => x.transactionType === "EXPENSE");
+      const filtered = recurringTransactions.filter((x) => x.transactionType === "EXPENSE");
       sortTransactions(sortOption, filtered);
     } else {
-      const filtered = recurringTransactionPageResponse.transactions.filter((x) => x.transactionType === "INCOME");
+      const filtered = recurringTransactions.filter((x) => x.transactionType === "INCOME");
       sortTransactions(sortOption, filtered);
     }
   };
@@ -142,16 +138,6 @@ export default function RecurringTransactionSummary() {
         <TouchableOpacity onPress={goToRecurringTransactionCreate}>
           <Feather name="plus" style={styles.plusIconStyle} />
         </TouchableOpacity>
-      </View>
-      <View style={styles.box}>
-        <View style={styles.row}>
-          <Text style={styles.summaryText}>Total Recurring Expenses: </Text>
-          <Text style={styles.moneyText}>${recurringTransactionPageResponse.totalRecurringExpense}</Text>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.summaryText}>Total Recurring Income: </Text>
-          <Text style={styles.moneyText}>${recurringTransactionPageResponse.totalRecurringIncome}</Text>
-        </View>
       </View>
 
       <View style={styles.sortContainer}>
@@ -175,7 +161,7 @@ export default function RecurringTransactionSummary() {
         <TouchableOpacity style={styles.sortButton} onPress={() => filterByType(false)}>
           <Text style={styles.text}>Filter by income</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.sortButton} onPress={() => setDisplayTransactions(recurringTransactionPageResponse.transactions)}>
+        <TouchableOpacity style={styles.sortButton} onPress={() => setDisplayTransactions(recurringTransactions)}>
           <Text style={styles.text}>Reset Filter</Text>
         </TouchableOpacity>
       </View>

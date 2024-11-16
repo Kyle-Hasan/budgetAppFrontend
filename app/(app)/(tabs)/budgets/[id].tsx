@@ -1,11 +1,11 @@
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 
 
 import { View, StyleSheet } from 'react-native';
 import CreateBudgetForm, {budgetForm} from '../../../../components/budgets/CreateBudgetForm'
-import { useGlobalSearchParams } from 'expo-router';
+import { useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
 
@@ -17,7 +17,8 @@ const budgetPage = () => {
   const [budgetForm,setBudgetForm] = useState<budgetForm | null>(null)
 
 
-  useEffect(()=> {
+  useFocusEffect(
+    useCallback(()=> {
     const getData = async()=> {
   
       
@@ -29,15 +30,16 @@ const budgetPage = () => {
      
       const response = await api.get("/budgets/"+id)
       console.log("trigger use effect paretn",response.data)
-      setBudgetForm({ ...response.data });
+      formContextObj?.setBudgetForm({...response.data})
+      
       
     }
     getData()
-  },[glob.id])
+  },[glob.id]))
 
 
 
-  return (<View style={styles.container}>{ budgetForm && <CreateBudgetForm budgetForm={budgetForm as budgetForm}></CreateBudgetForm>}</View>);
+  return (<View style={styles.container}>{ budgetForm && <CreateBudgetForm></CreateBudgetForm>}</View>);
 };
 
 const styles = StyleSheet.create({

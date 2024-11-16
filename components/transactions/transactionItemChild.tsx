@@ -34,8 +34,8 @@ const TransactionItemChild = ({transaction,deleteTransaction,showAccountAndBudge
     const formContextObj = useContext(FormContext)
 
     const editNavigate = ()=> {
-        formContextObj?.setTransactionForm(transaction)
-        router.push('/transactionFormModal' as Href<string>)
+      const str:string = `/transactions/${transaction.id}`
+      router.push(str as Href<string>);
     }
 
    

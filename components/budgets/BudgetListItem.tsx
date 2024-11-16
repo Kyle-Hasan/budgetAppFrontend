@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert,Dimensions } from 'react-native';
 import ProgressBar from './ProgressBar'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useRouter } from 'expo-router';
 import api from '@/app/api/api';
 
@@ -12,7 +12,8 @@ export interface budgetItem {
   currentSpent:number,
   total:number,
   id:string,
-  color:string
+  color:string,
+  icon?:string
 }
 
 interface budgetListItemProps {
@@ -48,8 +49,13 @@ const BudgetListItem = ({budgetItem,deleteBudget}:budgetListItemProps) => {
      <View style={styles.box}>
   <View>
     <View style={styles.topSection}>
+     
       <View style={styles.topSection}>
+      <View style={styles.nameContainer} >
+      {budgetItem.icon &&<FontAwesome5 name={budgetItem.icon} color="#ffffff" style={styles.topIconStyle}></FontAwesome5>}
         <Text style={styles.textStyle}>{name}</Text>
+        </View>
+     
         <View style={styles.progressBox}>
           <Text style={styles.alignText}>
             ${currentSpent}/${total}
@@ -82,15 +88,15 @@ const styles = StyleSheet.create({
     flex:1,
     backgroundColor: '#272727',
     borderRadius: 5,
-    padding: 10,
+    padding: 15,
     margin: 5,
-    width: "100%",
-    alignSelf:"center"
+    width:300,
+    alignSelf:"center",
+    
   },
   topSection: {
     flexDirection: 'row',
-    alignItems: 'center',  
-    justifyContent:'center',
+    width:250,
     marginBottom: 10,
     gap:10
   },
@@ -104,8 +110,9 @@ const styles = StyleSheet.create({
   progressBox: {
     backgroundColor: '#737373',
     padding: 5,
-    flex:1,           
+              
     alignItems: 'center', 
+    width:150
 
    
   },
@@ -119,10 +126,22 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 20,
   },
+  topIconStyle: {
+    fontSize:25
+  },
   alignText: {
     textAlign: 'center',
     color: "#ffffff",      
   },
+  nameContainer: {
+    display:"flex",
+    flexDirection:"row",
+    alignItems:"flex-start",
+    width:100,
+    flexGrow:1,
+    gap:3
+   
+  }
 });
 
 

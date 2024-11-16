@@ -1,12 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from "react-native";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 import Moment from "moment";
 import { Href, useRouter } from "expo-router";
 import { useContext } from "react";
 import { FormContext } from "@/app/context/FormContex";
 import { RecurringTransaction } from "./RecurringTransactionForm";
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export interface ParentEntity {
@@ -18,6 +19,7 @@ interface RecurringTransactionProps {
   recurringTransaction: RecurringTransaction;
   deleteTransaction: (id: number) => void;
   showAccountAndBudget?: boolean;
+  icon?:string
 }
 
 const RecurringTransactionListItem = ({
@@ -29,11 +31,13 @@ const RecurringTransactionListItem = ({
   const formContextObj = useContext(FormContext);
 
   const editNavigate = () => {
-    formContextObj?.setRecurringTransactionForm(recurringTransaction)
-    router.push("/recurringTransactionFormModal" as Href<string>);
+    const str:string = `/recurringTransactions/${recurringTransaction.id}`
+    router.push(str as Href<string>);
   };
 
-  const createDeleteAlert = () =>
+  const createDeleteAlert = () => {
+
+    if(Platform.OS !== 'web') {
     Alert.alert("Confirm Delete", "Are you sure you want to delete this recurring transaction?", [
       {
         text: "Cancel",
@@ -45,11 +49,21 @@ const RecurringTransactionListItem = ({
           deleteTransaction(recurringTransaction.id);
         },
       },
-    ]);
+    ])} 
+    else {
+
+      if (window.confirm("Are you sure you want to delete this item?")) {
+        deleteTransaction(recurringTransaction.id);
+      }
+
+    }
+  };
 
   return (
     <View style={styles.box}>
       <View style={styles.topSection}>
+      {recurringTransaction.icon &&<FontAwesome5 name={recurringTransaction.icon} style={styles.topIconStyle}></FontAwesome5>}
+
         <Text style={styles.textStyle}>
           <Text style={styles.boldText}>Name:</Text> {recurringTransaction.name}
         </Text>
@@ -132,5 +146,12 @@ const styles = StyleSheet.create({
   iconStyle: {
     color: "#ffffff",
     fontSize: 20,
+    
   },
+  topIconStyle: {
+    color: "#ffffff",
+    fontSize: 30,
+    marginRight:5
+
+  }
 });

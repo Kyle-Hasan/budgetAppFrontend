@@ -24,7 +24,7 @@ export default function accountFormModal() {
   return (
     <View style={styles.container}>
       {isPresented && <Link href="../" style={styles.backContainer}><Feather style={styles.backIcon} name="arrow-left"></Feather><Text style={styles.textStyle}>Go Back</Text></Link>}
-      <CreateAmountForm accountForm={accountForm}></CreateAmountForm>
+      <CreateAmountForm></CreateAmountForm>
     </View>
   );
 }

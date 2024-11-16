@@ -1,10 +1,10 @@
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 
 
 
 import { View, StyleSheet } from 'react-native';
-import { useGlobalSearchParams } from 'expo-router';
+import { useFocusEffect, useGlobalSearchParams } from 'expo-router';
 import api from '@/app/api/api';
 import { FormContext } from '@/app/context/FormContex';
 import CreateAmountForm, { accountForm } from '@/components/accounts/AccountForm';
@@ -16,21 +16,21 @@ const accountPage = () => {
   const [accountForm,setAccountForm] = useState<accountForm | null>(null)
 
 
-  useEffect(()=> {
+  useFocusEffect(useCallback(()=> {
     const getData = async()=> {
       const id = glob.id
      
       const response = await api.get("/accounts/"+id)
       
-      setAccountForm({ ...response.data });
+       formContextObj?.setAccountForm({...response.data})
       
     }
     getData()
-  },[])
+  },[glob.id]))
 
 
 
-  return (<View style={styles.container}> { accountForm &&  <CreateAmountForm accountForm={accountForm}></CreateAmountForm>}</View>);
+  return (<View style={styles.container}> { accountForm &&  <CreateAmountForm ></CreateAmountForm>}</View>);
 };
 
 const styles = StyleSheet.create({
