@@ -10,12 +10,14 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 interface DateInputProps {
   date:string,
   setDate:Function
+  formInput?:boolean
 }
-const DateInput = ({date,setDate}:DateInputProps)=> {
+const DateInput = ({date,setDate,formInput}:DateInputProps)=> {
 
   const [openDatePicker, setOpenDatePicker] = useState(false)
   return (<View style={styles.flex}><AntDesign name="calendar" size={24} color="white" />{Platform.OS !== 'web' ? (
-        (<View><TouchableOpacity onPress={()=> {setOpenDatePicker(true)}}><View style={styles.input}><Text style={styles.label}>{date}</Text></View></TouchableOpacity>
+        (<View><TouchableOpacity onPress={()=> {setOpenDatePicker(true)}}><View style={{...styles.input,width: formInput ? 200 : Dimensions.get('window').width * 0.30}}>
+          <Text style={styles.label}>{date ? date : new Date().toISOString().split('T')[0]}</Text></View></TouchableOpacity>
       {openDatePicker&&<DateTimePicker
           testID="dateTimePicker"
           value={date ? new Date(Date.parse(date)) : new Date()}
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 10,
 
-    minWidth: Dimensions.get('window').width * 0.50
+    width: Dimensions.get('window').width * 0.30
   },
   label: {
     color: '#ffffff',

@@ -68,9 +68,9 @@ export default function TabLayout() {
         
         options={{
           headerShown:false,
-          title: "Recurring Transactions",
+          title: "Recurring",
           tabBarIcon: ({ color, focused }) => (
-            <FontAwesome6 name="money-bill-transfer" size={24} color="white" />
+            <FontAwesome6 name="repeat" size={24} color="white" />
           ),
         }}
       />

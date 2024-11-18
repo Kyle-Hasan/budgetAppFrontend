@@ -11,6 +11,7 @@ type PieChartDataFormat = {
     currentSpent: number;
     color: string;
     percent?: string;
+    id:number
 };
 
 interface PieChartViewProps {
@@ -60,7 +61,7 @@ const PieChartView: React.FC<PieChartViewProps> = ({ pieChartData }) => {
     }, [pieChartData]);
 
     const webData = {
-        labels: data.map((x) => x.name),
+        labels: data.map((x) => x.id.toString),
         datasets: [
             {
                 data: data.map((x) => x.currentSpent),
@@ -86,7 +87,7 @@ const PieChartView: React.FC<PieChartViewProps> = ({ pieChartData }) => {
                     data={data}
                     colorKey="color"
                     valueKey="currentSpent"
-                    labelKey="name"
+                    labelKey="id"
                 >
                     <Pie.Chart>
                         {({ slice }) => (
@@ -102,7 +103,7 @@ const PieChartView: React.FC<PieChartViewProps> = ({ pieChartData }) => {
             )}
             <View style={styles.legendContainer}>
                 {data.map((x) => (
-                    <View key={x.name} style={styles.labelContainer}>
+                    <View key={x.id.toString()} style={styles.labelContainer}>
                         <View style={{ ...styles.box, backgroundColor: x.color }} />
                         <Text style={styles.text}>
                             {x.name} ({x.percent}%)

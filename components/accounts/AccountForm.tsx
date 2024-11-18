@@ -168,12 +168,14 @@ const CreateAmountForm = () => {
         placeholder="$0.00"
         placeholderTextColor={"text"}
       />
+      <View style={styles.iconPickerContainer}><IconPicker onSelect={changeIcon} selectedIcon={formData.icon ? formData.icon : null}></IconPicker></View>
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
-    <View><IconPicker onSelect={changeIcon} selectedIcon={formData.icon ? formData.icon : null}></IconPicker></View>
+    
     { formData.transactions && formData.transactions.length > 0 &&
-    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10,minWidth:200}}>
-      
+    (<View style={{ flexGrow:1 ,flex:1, marginBottom:10,minWidth:200}}>
     <FlatList
+    
+    persistentScrollbar={true}
      ListEmptyComponent={() => <View style={{ height: 0}} />}
     contentContainerStyle={{ }}
     keyExtractor={(item,index)=> index.toString()}
@@ -193,72 +195,76 @@ const CreateAmountForm = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      width:'100%',
-      
-      backgroundColor: '#121212',
-      padding: 20,
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    width:'100%',
+    
+    backgroundColor: '#121212',
+    padding: 20,
+  },
+  formContainer: {
+    backgroundColor: '#1e1e1e',
+    padding: 20,
+    borderRadius: 8,
+    width: '100%',
+    maxWidth: 400,
+    elevation: 5, 
+  },
+  input: {
+    backgroundColor: '#2c2c2c',
+    color: '#ffffff',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#444',
+    padding: 10,
+    marginVertical: 10,
+    minWidth:200
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 24,
+    color: '#ffffff',
+    marginBottom: 20,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  linkText: {
+    marginTop: 20,
+    color: '#ffffff',
+    textAlign: 'center',
+  },
+  label: {
+    color: '#ffffff',
+    marginVertical:5
+  },
+  plusIconStyle: {
+      color: "#ffffff",
+      fontSize:20,
+      paddingTop:5
     },
-    formContainer: {
-      backgroundColor: '#1e1e1e',
-      padding: 20,
-      borderRadius: 8,
-      width: '100%',
-      maxWidth: 400,
-      elevation: 5, 
+    transactionsHeading: {
+      flexDirection:'row',
+      gap:5
     },
-    input: {
-      backgroundColor: '#2c2c2c',
-      color: '#ffffff',
-      borderRadius: 5,
-      borderWidth: 1,
-      borderColor: '#444',
-      padding: 10,
-      marginVertical: 10,
-      minWidth:200
-    },
-    title: {
-      textAlign: 'center',
-      fontSize: 24,
-      color: '#ffffff',
-      marginBottom: 20,
-    },
-    errorText: {
-      color: 'red',
-      fontSize: 14,
-      marginBottom: 5,
-    },
-    linkText: {
-      marginTop: 20,
-      color: '#ffffff',
-      textAlign: 'center',
-    },
-    label: {
-      color: '#ffffff',
-      marginVertical:5
-    },
-    plusIconStyle: {
-        color: "#ffffff",
-        fontSize:20,
-        paddingTop:5
-      },
-      transactionsHeading: {
-        flexDirection:'row',
-        gap:5
-      },
 
-      emptyTransactions: {
+    emptyTransactions: {
 
-        flexGrow:0, 
-        marginBottom: 1,
-         height:0
+      flexGrow:0, 
+      marginBottom: 1,
+       height:0
 
-      }
+    },
 
-      
-  });
+  iconPickerContainer: {
+    height:120
+  }
+
+    
+});
 
 
 export default CreateAmountForm;

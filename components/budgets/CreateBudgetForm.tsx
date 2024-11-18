@@ -60,8 +60,9 @@ const CreateBudgetForm = ({refreshSummary}:budgetFormProps) => {
       const transaction:transaction = {
         name: "",
         id: -1,
-        date: '',
+        
         amount: 0,
+        date:new Date().toISOString().split('T')[0],
         budget: {name:formData.name,id:formData.id}
       }
       if(formContextObj) {
@@ -198,11 +199,13 @@ const CreateBudgetForm = ({refreshSummary}:budgetFormProps) => {
         placeholder="$0.00"
         placeholderTextColor={"white"}
       />
-    <View><IconPicker onSelect={changeIcon} selectedIcon={formData.icon ? formData.icon : null}></IconPicker></View>
+    <View style={styles.iconPickerContainer} ><IconPicker onSelect={changeIcon} selectedIcon={formData.icon ? formData.icon : null}></IconPicker></View>
     <View style={styles.transactionsHeading}><Text style={styles.label}>Transactions</Text><TouchableOpacity onPress={navigateToTransactionForm}><Feather name="plus" style={styles.plusIconStyle} /></TouchableOpacity></View> 
     { formData.transactions && formData.transactions.length > 0 &&
-    (<View style={{ flexGrow:0.6 ,flex:1, marginBottom:10,minWidth:200}}>
+    (<View style={{ flexGrow:1 ,flex:1, marginBottom:10,minWidth:200}}>
     <FlatList
+    
+    persistentScrollbar={true}
      ListEmptyComponent={() => <View style={{ height: 0}} />}
     contentContainerStyle={{ }}
     keyExtractor={(item,index)=> index.toString()}
@@ -282,7 +285,11 @@ const styles = StyleSheet.create({
         marginBottom: 1,
          height:0
 
-      }
+      },
+
+    iconPickerContainer: {
+      height:120
+    }
 
       
   });

@@ -45,7 +45,7 @@ import CurrencyInput from "react-native-currency-input";
     useFocusEffect(
       useCallback(
       ()=> {
-        toast.hide()
+        
         let transactionData = formContextObj?.transactionForm
         if(transactionData) {
        
@@ -104,6 +104,7 @@ import CurrencyInput from "react-native-currency-input";
 
     const submit = async()=>{
       try {
+        
         setLoading(true)
         // dont make api request for budget still being made
         console.log(formContextObj)
@@ -126,6 +127,7 @@ import CurrencyInput from "react-native-currency-input";
         setTransaction(response.data)
         formContextObj?.setTransactionForm(transaction)
         console.log("updated")
+        toast.hide()
         toast.show('Successfully saved!', {
           message: "Transaction Saved",
           native:false,
@@ -196,7 +198,7 @@ import CurrencyInput from "react-native-currency-input";
         placeholderTextColor={"white"}
       />
             <Text style={styles.label}>Date</Text>
-            <DateInput date={transaction.date} setDate={(value:any)=> {setFormData("date",value)}}></DateInput>
+            <DateInput formInput={true} date={transaction.date} setDate={(value:any)=> {setFormData("date",value)}}></DateInput>
            
       {budgets && (<View style={styles.budgetDropdown}><Text style={styles.label}>Budget</Text><Dropdown changeSelection={budgetChanged} defaultSelection={transaction?.budget} items={budgets} keyName="id" labelName="name" ></Dropdown></View>) }
       {accounts && (<View style={styles.accountDropdown}><Text style={styles.label}>Account</Text><Dropdown changeSelection={accountChanged} defaultSelection={transaction?.account} items={accounts} keyName="id" labelName="name" ></Dropdown></View>) }

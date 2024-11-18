@@ -11,7 +11,7 @@ export interface budgetItem {
   name:string,
   currentSpent:number,
   total:number,
-  id:string,
+  id:number,
   color:string,
   icon?:string
 }

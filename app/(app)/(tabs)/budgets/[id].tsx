@@ -14,7 +14,7 @@ const budgetPage = () => {
   const glob = useGlobalSearchParams();
   
   const formContextObj = useContext(FormContext)
-  const [budgetForm,setBudgetForm] = useState<budgetForm | null>(null)
+
 
 
   useFocusEffect(
@@ -39,7 +39,7 @@ const budgetPage = () => {
 
 
 
-  return (<View style={styles.container}>{ budgetForm && <CreateBudgetForm></CreateBudgetForm>}</View>);
+  return (<View style={styles.container}>{ <CreateBudgetForm></CreateBudgetForm>}</View>);
 };
 
 const styles = StyleSheet.create({

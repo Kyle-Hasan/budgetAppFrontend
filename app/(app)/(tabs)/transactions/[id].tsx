@@ -42,7 +42,7 @@ const transactionPage = () => {
 
 
 
-  return (<View style={styles.container}> { formContextObj?.transactionForm && <TransactionForm></TransactionForm>}</View>);
+  return (<View style={styles.container}>{ formContextObj?.transactionForm && <TransactionForm></TransactionForm>}</View>);
 };
 
 const styles = StyleSheet.create({

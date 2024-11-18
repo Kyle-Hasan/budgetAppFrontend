@@ -13,7 +13,7 @@ import CreateAmountForm, { accountForm } from '@/components/accounts/AccountForm
 const accountPage = () => {
   const glob = useGlobalSearchParams();
   const formContextObj = useContext(FormContext)
-  const [accountForm,setAccountForm] = useState<accountForm | null>(null)
+ 
 
 
   useFocusEffect(useCallback(()=> {
@@ -30,7 +30,7 @@ const accountPage = () => {
 
 
 
-  return (<View style={styles.container}> { accountForm &&  <CreateAmountForm ></CreateAmountForm>}</View>);
+  return (<View style={styles.container}>{<CreateAmountForm ></CreateAmountForm>}</View>);
 };
 
 const styles = StyleSheet.create({

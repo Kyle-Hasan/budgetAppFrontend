@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, StyleSheet, TouchableOpacity, FlatList } from "react-native";
-
+import { Text, View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { FlatList } from 'react-native-gesture-handler'
 interface dropdownProps {
   items: any[];
   labelName: string;
@@ -49,7 +49,7 @@ const Dropdown = ({
         </Text>
       </TouchableOpacity>
       {show && (
-        <View>
+        <View style={styles.dropdown}>
           <TextInput
             style={styles.searchInput}
             placeholder="Search..."
@@ -58,8 +58,8 @@ const Dropdown = ({
             onChangeText={handleSearch}
           />
           <FlatList
+          nestedScrollEnabled={true}
             data={showItems}
-            style={styles.listShow}
             keyExtractor={(item) => item[keyName].toString()}
             renderItem={({ item }) => (
               <View style={styles.listItem}>
@@ -75,6 +75,7 @@ const Dropdown = ({
                 </TouchableOpacity>
               </View>
             }
+            style={styles.listShow}
           />
         </View>
       )}
@@ -85,7 +86,28 @@ const Dropdown = ({
 const styles = StyleSheet.create({
   container: {
     minWidth: 200,
-    maxHeight: 200,
+    position: "relative", 
+    maxHeight:200
+  },
+  currentItem: {
+    backgroundColor: "#2c2c2c",
+    borderRadius: 5,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#444",
+    minHeight: 40,
+  },
+  dropdown: {
+    position: "absolute",
+    top: 50, 
+    left: 0,
+    right: 0,
+    backgroundColor: "#1c1c1c",
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#444",
+    zIndex: 1000, 
+    maxHeight: 125, 
   },
   searchInput: {
     backgroundColor: "#1c1c1c",
@@ -97,23 +119,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   listShow: {
-    display: "flex",
-    position: "absolute",
-    top: 40,
-    zIndex: 999,
-    elevation: 999,
-  },
-  currentItem: {
-    backgroundColor: "#2c2c2c",
-    borderRadius: 5,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#444",
-    minHeight: 40,
+    maxHeight: 200, 
   },
   listItem: {
     backgroundColor: "#2c2c2c",
-    zIndex: 24,
     padding: 10,
     minWidth: 200,
     borderWidth: 1,
@@ -124,5 +133,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
+
 
 export default Dropdown;
