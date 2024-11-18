@@ -84,7 +84,7 @@ export default function TransactionSummary() {
     onlyListLoading?: boolean,
     sortOptionArg?: string,
     sortOrderAscArg?: boolean,
-    filterArg?:string
+    filterArg?:string | null
   ) => {
     if (firstLoad) setLoading(true);
     else if (onlyListLoading) setListBottomLoading(true);
@@ -245,7 +245,7 @@ const filterByType = (type:string) => {
   </TouchableOpacity>
   <TouchableOpacity style={styles.sortButton} onPress={() => { 
     setFilter("")
-    getData(0,false,startDate,endDate,true,sortOption,sortOrderAsc,undefined)
+    getData(0,false,startDate,endDate,true,sortOption,sortOrderAsc,null)
   }}>
     <Text style={styles.text} >Reset Filter</Text>
     
