@@ -1,9 +1,14 @@
 import { AntDesign } from "@expo/vector-icons"
 import { XStack, YStack } from "@tamagui/stacks"
 import { Toast, useToastState } from "@tamagui/toast"
+import { useFocusEffect } from "expo-router"
+import { useCallback } from "react"
 
 export default function CurrentToast() {
     const currentToast = useToastState()
+    useFocusEffect(useCallback(()=> {
+  
+    } , []))
     currentToast?.notificationOptions
     const color = currentToast?.customData?.color
     if (!currentToast || currentToast.isHandledNatively) return null
@@ -36,7 +41,7 @@ export default function CurrentToast() {
         
           
           {!!currentToast.message && (
-            <Toast.Description>{currentToast.message}</Toast.Description>
+            <Toast.Description color="black">{currentToast.message}</Toast.Description>
           )}
         </YStack>
       </Toast>

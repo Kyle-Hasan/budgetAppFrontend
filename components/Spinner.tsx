@@ -9,7 +9,7 @@ interface PropTypes {
 const SpinnerComponent = ({ show }: PropTypes) => {
   return (
     show &&
-    <View>
+    <View style={styles.container}>
        <ActivityIndicator size="large" color="#6200ea" />
     </View>
   )
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       justifyContent: 'center',
+      marginTop:100
     },
     horizontal: {
       flexDirection: 'row',

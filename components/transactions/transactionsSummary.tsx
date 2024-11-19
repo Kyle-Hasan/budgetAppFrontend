@@ -211,7 +211,12 @@ const filterByType = (type:string) => {
           <View style={styles.container}>
             <View style={styles.timeContainer}>
               <Text style={styles.header}>Transactions</Text>
-              <TouchableOpacity onPress={() => router.push("/transactionFormModal" as Href<string>)}>
+              <TouchableOpacity onPress={() => 
+                
+                {
+                  formContextObj?.setTransactionForm({name:'',id:-1,amount:0,date:'',account:null,budget:null,type:null})
+                  router.push("/transactionFormModal" as Href<string>)}
+                }>
                 <Feather name="plus" style={styles.plusIconStyle} />
               </TouchableOpacity>
             </View>
@@ -219,7 +224,7 @@ const filterByType = (type:string) => {
               <Text style={styles.summaryText}>Total Spent: ${transactionPageResponse.totalSpent}</Text>
               <Text style={styles.summaryText}>Total Deposited: ${transactionPageResponse.totalDeposited}</Text>
             </View>
-            <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={() => getData(0, true)} />
+            <DateFilter startDate={startDate} endDate={endDate} setEndDate={setEndDate} setStartDate={setStartDate} callback={(startDate:string,endDate:string)=> {getData(0,true,startDate,endDate)}} />
             <View style={styles.sortContainer}>
             <FlatList contentContainerStyle={{ gap: 16 }} numColumns={numColumns}  data={sortOptions} keyExtractor={(item)=> item.option} renderItem={
       ({item})=> {

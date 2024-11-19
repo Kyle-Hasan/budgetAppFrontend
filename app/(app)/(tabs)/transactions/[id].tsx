@@ -32,7 +32,7 @@ const transactionPage = () => {
         formContextObj?.setTransactionForm(response.data)
 
         return ()=> {
-
+            formContextObj?.setTransactionForm(null)
         }        
       }
       getData()

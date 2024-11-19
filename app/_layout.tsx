@@ -11,6 +11,7 @@ import { ToastProvider, ToastViewport } from "@tamagui/toast"
 import React, { useEffect } from "react"
 import { PortalProvider } from '@tamagui/portal';
 import { useFonts } from 'expo-font'
+import { StatusBar } from "expo-status-bar"
 export default function Root() {
   const colorScheme = useColorScheme()
 
@@ -33,10 +34,12 @@ export default function Root() {
 
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
+      <StatusBar style="light"></StatusBar>
        <PortalProvider>
       <ToastProvider>
-      <ToastViewport flexDirection="column" top={50} left={0} right={0} />
+     
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    
     <AuthProvider>
       <FormProvider>
         

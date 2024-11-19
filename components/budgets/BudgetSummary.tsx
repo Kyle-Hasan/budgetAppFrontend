@@ -79,7 +79,7 @@ export default function BudgetSummary() {
       setOnlyListLoading(true)
     }
     try{
-      console.log("refresh full")
+      
    
       let startDateObj = new Date(startDate); 
       if(startDateNew) {
@@ -135,11 +135,6 @@ export default function BudgetSummary() {
     const nameSearch = async (pageNumber:number,name:string)=> {
       setOnlyListLoading(true)
       try{
-        console.log("refresh full")
-       
-     
-       
-        
         
        const response = await api.get('/budgets/searchByName',{
         params: {
@@ -181,6 +176,10 @@ export default function BudgetSummary() {
     useCallback(()=>{
     setSearchVal('')
     setPageNumber(0)
+    setBudgets([])
+
+    setStartDate(startOfMonth.toISOString().split('T')[0]);
+    setEndDate(endOfMonth.toISOString().split('T')[0]);
   
     getData(0,true)
     
@@ -202,8 +201,10 @@ const [searchVal,setSearchVal] = useState("")
 
 const deleteBudget = async(id:number)=> {
   setLoading(true)
+  
   await api.delete(`/budgets/${id}`)
-  getData(pageNumber,false)
+  
+  getData(pageNumber,true)
   flatListRef.current?.scrollToOffset({ offset: scrollOffset.current, animated: false });
   setLoading(false)
 }
@@ -219,7 +220,7 @@ const filterBudgets = (text:string)=> {
 } 
 
 const debouncedFilter = useDebounce(filterBudgets,200)
-console.log(debouncedFilter)
+
 
 const handleSearchChange = (text: string) => {
   
@@ -232,8 +233,6 @@ const handleSearchChange = (text: string) => {
 
 const sortBudgets = (option:string, optionalArr?:budgetItem[]) => {
  
-  
-  
   let sortedBudgets:budgetItem[] = []
 
   if(optionalArr) {
@@ -340,7 +339,7 @@ return (
                 endDate={endDate}
                 setEndDate={setEndDate}
                 setStartDate={setStartDate}
-                callback={getData}
+                callback={(startDate:string,endDate:string)=> {getData(0,true,startDate,endDate)}}
               />
             </View>
             <View style={styles.sortContainer}>
@@ -476,7 +475,7 @@ const styles = StyleSheet.create({
     width:'100%'
   },
   spinnerStyle:{
-    marginTop:100
+    
   },
   sortContainer: {
     flexDirection: 'row',

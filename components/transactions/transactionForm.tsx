@@ -38,13 +38,15 @@ import CurrencyInput from "react-native-currency-input";
 
     const router = useRouter()
     const formContextObj = useContext(FormContext)
-    const [transaction,setTransaction] = useState<transaction>({name:'',id:1,amount:0,date:'',account:null,budget:null,type:null})
+    const [transaction,setTransaction] = useState<transaction>({name:'',id:-1,amount:0,date:'',account:null,budget:null,type:null})
     const [budgets,setBudgets] = useState<any [] | null>(null)
     const [accounts,setAccounts] = useState<any[] | null>(null)
     const [defaultType,setDefaultType] = useState<{label:string} | null | undefined>(null)
+    const [toastVisible,setToastVisible] = useState(false)
     useFocusEffect(
       useCallback(
       ()=> {
+      
         
         let transactionData = formContextObj?.transactionForm
         if(transactionData) {
@@ -60,7 +62,6 @@ import CurrencyInput from "react-native-currency-input";
         }
         
         }
-
         else {
           
           setDefaultType(types[0])
@@ -97,26 +98,31 @@ import CurrencyInput from "react-native-currency-input";
           }
 
         }
-
         getBudgets()
         getAccounts()
+        return ()=> {
+          console.log("blur")
+         // formContextObj?.setTransactionForm(null)
+          setToastVisible(false)
+        }
       },[formContextObj?.transactionForm]))
 
     const submit = async()=>{
       try {
-        
+       
         setLoading(true)
         // dont make api request for budget still being made
         console.log(formContextObj)
         const getType = transaction.type ? transaction.type.toUpperCase(): defaultType?.label.toUpperCase()
         const date = transaction.date ? new Date(transaction.date) : new Date()
-        setTransaction({...transaction,type:getType})
-        if(formContextObj?.budgetForm?.id !== -1 && formContextObj?.accountForm?.id !== -1) {
+       
+       
+        if( (transaction.account && transaction.account?.id !== -1) && (transaction.budget && transaction.budget?.id !== -1) ) {
         console.log(transaction)
         
         const body = {...transaction, amount: transaction.amount, type: getType, date:date}
         let response:any;
-        if(transaction.id && transaction.id !== -1) {
+        if(transaction.id != -1) {
           response = await api.patch('/transactions',body)
         }
         else {
@@ -124,8 +130,7 @@ import CurrencyInput from "react-native-currency-input";
        
         }
 
-        setTransaction(response.data)
-        formContextObj?.setTransactionForm(transaction)
+        formContextObj?.setTransactionForm(response.data)
         console.log("updated")
         toast.hide()
         toast.show('Successfully saved!', {
@@ -136,6 +141,7 @@ import CurrencyInput from "react-native-currency-input";
           }
           
         })
+        setToastVisible(true)
       
         setLoading(false)
       }
@@ -205,7 +211,7 @@ import CurrencyInput from "react-native-currency-input";
       {defaultType && (<View style={styles.typeDropdown}><Text style={styles.label}>Transaction Type</Text><Dropdown changeSelection={typeChanged} defaultSelection={types[0]} items={types} keyName="label" labelName="label" ></Dropdown></View>)}
       <Button title="Submit" onPress={submit} color="#6200ea" disabled={loading}></Button>
       <SpinnerComponent show={loading}></SpinnerComponent>
-      <CurrentToast></CurrentToast>
+     { toastVisible && <CurrentToast></CurrentToast> }
     </View>)
 
 }

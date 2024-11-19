@@ -71,11 +71,18 @@ const CreateAmountForm = () => {
       formContextObj?.setTransactionForm(null)
 
 
+
+
     }, [formContextObj?.transactionForm]))
 
     useFocusEffect(useCallback(()=> {
       if(formContextObj?.accountForm) {
         setFormData({...formContextObj?.accountForm})
+        }
+
+        return ()=> {
+          formContextObj?.setAccountForm(null)
+          toast.hide()
         }
 
     }, [formContextObj?.accountForm]))
@@ -96,17 +103,14 @@ const CreateAmountForm = () => {
           console.log("body is", body)
           
           response = await api.post("/accounts",body)
-         
-         
+     
         }
         formContextObj?.setTransactionForm(null)
 
         setFormData(response.data)
-     
-     
-
+    
         toast.show('Successfully saved!', {
-          message: "Budget Saved",
+          message: "Account Saved",
           native:false,
           customData: {
             color:'green'

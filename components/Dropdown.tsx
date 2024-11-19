@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { FlatList } from 'react-native-gesture-handler'
 interface dropdownProps {
@@ -25,6 +25,8 @@ const Dropdown = ({
     setSearchTerm(""); 
     setShow(!show);
   };
+
+ 
 
   const changeItem = (item: any | null) => {
     changeSelection(item);
@@ -56,27 +58,29 @@ const Dropdown = ({
             placeholderTextColor="#888"
             value={searchTerm}
             onChangeText={handleSearch}
+            
           />
           <FlatList
-          nestedScrollEnabled={true}
-            data={showItems}
-            keyExtractor={(item) => item[keyName].toString()}
-            renderItem={({ item }) => (
-              <View style={styles.listItem}>
-                <TouchableOpacity onPress={() => changeItem(item)}>
-                  <Text style={styles.text}>{item[labelName]}</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            ListHeaderComponent={
-              <View style={styles.listItem}>
-                <TouchableOpacity onPress={() => changeItem(null)}>
-                  <Text style={styles.text}>None</Text>
-                </TouchableOpacity>
-              </View>
-            }
-            style={styles.listShow}
-          />
+  nestedScrollEnabled={true}
+  data={showItems}
+  keyExtractor={(item) => item[keyName].toString()}
+  renderItem={({ item }) => (
+    <View style={styles.listItem}>
+      <TouchableOpacity onPress={() => changeItem(item)}>
+        <Text style={styles.text}>{item[labelName]}</Text>
+      </TouchableOpacity>
+    </View>
+  )}
+  ListHeaderComponent={
+    <View style={styles.listItem}>
+      <TouchableOpacity onPress={() => changeItem(null)}>
+        <Text style={styles.text}>None</Text>
+      </TouchableOpacity>
+    </View>
+  }
+  style={styles.listShow}
+  keyboardShouldPersistTaps="handled" 
+/>
         </View>
       )}
     </View>

@@ -5,6 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ToastViewport } from '@tamagui/toast';
 
 
 
@@ -26,6 +27,7 @@ export default function AppLayout() {
 
   
   return <GestureHandlerRootView>
+     <ToastViewport flexDirection="column" top={50} left={0} right={0} />
     <StatusBar style="light"></StatusBar>
     <Stack screenOptions={{headerShown:false}}>
     <Stack.Screen name="(tabs)"/>

@@ -63,6 +63,7 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
     };
 
     fetchBudgetsAndAccounts();
+    return ()=> {toast.hide()}
   }, []));
 
   const handleSubmit = async () => {
@@ -142,7 +143,7 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
         <Dropdown changeSelection={typeChanged} defaultSelection={{ label: recurringTransaction.transactionType, value: recurringTransaction.transactionType }} items={transactionTypeOptions} keyName="value" labelName="label" />
       </View>
 
-      <View><IconPicker onSelect={changeIcon} selectedIcon={recurringTransaction.icon ? recurringTransaction.icon : null}></IconPicker></View>
+      <View style={styles.iconPickerContainer}><IconPicker onSelect={changeIcon} selectedIcon={recurringTransaction.icon ? recurringTransaction.icon : null}></IconPicker></View>
 
 
       <Button title="Submit" onPress={handleSubmit} color="#6200ea" disabled={loading} />
@@ -204,7 +205,9 @@ const styles = StyleSheet.create({
     marginBottom:10,
     width:200,
     zIndex:897
-
+  },
+  iconPickerContainer: {
+    height:120
   }
 });
 

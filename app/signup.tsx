@@ -102,7 +102,6 @@ const SignupForm = () => {
         <TextInput
           autoCapitalize='none'
           autoCorrect={false}
-          placeholder="Email"
           style={styles.input}
           keyboardType="email-address"
           value={formData.email}

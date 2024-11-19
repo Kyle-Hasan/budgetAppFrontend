@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     padding: 5,
               
     alignItems: 'center', 
-    width:150
+    width:110
    
   },
   buttonBar: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     display:"flex",
     flexDirection:"row",
     alignItems:"flex-start",
-    width:100,
+    width:150,
     flexGrow:1,
     gap:3
    

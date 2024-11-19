@@ -59,7 +59,7 @@ export default function AccountSummary() {
   const [numColumns, setNumColumns] = useState(getColumnCount());
   const getData = async (startDateNew?:string,endDateNew?:string)=> {
 
-    console.log("refresh full")
+    
    
       let startDateObj = new Date(startDate); 
       if(startDateNew) {

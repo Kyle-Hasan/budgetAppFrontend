@@ -95,6 +95,11 @@ const CreateBudgetForm = ({refreshSummary}:budgetFormProps) => {
       setFormData({...formContextObj?.budgetForm})
       }
 
+      return ()=> {
+        formContextObj?.setBudgetForm(null)
+      
+      }
+
 
     }, [formContextObj?.budgetForm]))
 
