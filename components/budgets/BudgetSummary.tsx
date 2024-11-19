@@ -94,12 +94,13 @@ export default function BudgetSummary() {
       const startDateStr =  startDateObj.toISOString().split('T')[0]; 
       
       const endDateStr =  endDateObj.toISOString().split('T')[0]; 
+      
      const response = await api.get('/users/budgetScreen',{
       params: {
         startDate:startDateStr,
         endDate:endDateStr,
         sort:sortOptionArg ? sortOptionArg : sortOption,
-        order:sortOrderAscArg ? sortOrderAscArg ? "ASC":"DESC" :  sortOrderAsc ? "ASC": "DESC",
+        order:sortOrderAscArg !== undefined ? sortOrderAscArg ? "ASC":"DESC" :  sortOrderAsc ? "ASC": "DESC",
         pageNumber: pageNumber ? pageNumber : 0,
         size:SIZE,
       }
@@ -177,13 +178,14 @@ export default function BudgetSummary() {
     setSearchVal('')
     setPageNumber(0)
     setBudgets([])
+    setSortOption("name")
 
     setStartDate(startOfMonth.toISOString().split('T')[0]);
     setEndDate(endOfMonth.toISOString().split('T')[0]);
   
-    getData(0,true)
+    getData(0,true,startOfMonth.toISOString().split('T')[0],endOfMonth.toISOString().split('T')[0],false,"name",true)
     
-    setScrolled(true)
+    setScrolled(false)
 
     }, [])
     
@@ -220,6 +222,17 @@ const filterBudgets = (text:string)=> {
 } 
 
 const debouncedFilter = useDebounce(filterBudgets,200)
+const debouncedGetNextPage = useDebounce(()=> {
+  
+  
+    getData(pageNumber,false,startDate,endDate,false,sortOption)
+    
+  }, 200
+)
+
+const nextPage = ()=> {
+  debouncedGetNextPage()
+}
 
 
 const handleSearchChange = (text: string) => {
@@ -254,7 +267,8 @@ const sortBudgets = (option:string, optionalArr?:budgetItem[]) => {
   }
   else {
     setBudgets([])
-    getData(0,false,startDate,endDate,true,option)
+    
+    getData(0,false,startDate,endDate,true,option,!sortOrderAsc)
   }
 
  
@@ -262,6 +276,7 @@ const sortBudgets = (option:string, optionalArr?:budgetItem[]) => {
 
 const handleSortChange = (option:string) => {
   setSortOrderAsc(!sortOrderAsc);
+  
   setSortOption(option);
   sortBudgets(option);
   
@@ -269,6 +284,7 @@ const handleSortChange = (option:string) => {
 
 
 const handleScroll = (event: any) => {
+
   scrollOffset.current = event.nativeEvent.contentOffset.y;
 };
 
@@ -293,16 +309,13 @@ return (
       scrollEventThrottle={16}
       onEndReachedThreshold={0.1}
       onScroll={handleScroll}
+      onMomentumScrollBegin={()=> {setScrolled(true)}}
       
       onEndReached={({ distanceFromEnd }) => {
 
         if(distanceFromEnd <= 0) return
-       
-        if(scrolled) {
-        getData(pageNumber,false,startDate,endDate)
-        
-        
-      }}}
+        nextPage()
+        }}
       keyExtractor={(item, index) => {return `${item.id}-${index}`}}
       renderItem={({ item }) => (
         <BudgetListItem

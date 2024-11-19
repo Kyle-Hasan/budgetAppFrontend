@@ -175,7 +175,7 @@ export default function TransactionSummary() {
   const handleSortChange = (option: string) => {
     setSortOrderAsc(!sortOrderAsc);
     setSortOption(option);
-    getData(0, false, startDate, endDate, true, option);
+    getData(0, false, startDate, endDate, true, option,!sortOrderAsc);
   };
 
   const handleScrollEnd = () => {

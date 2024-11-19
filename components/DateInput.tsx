@@ -23,8 +23,12 @@ const DateInput = ({date,setDate,formInput}:DateInputProps)=> {
           value={date ? new Date(Date.parse(date)) : new Date()}
           onChange={(e)=> {
             setOpenDatePicker(false)
-            if(e.type == 'set') {
-              setDate(new Date(e.nativeEvent.timestamp).toISOString().split('T')[0])
+            if (e.type === 'set') {
+              const timestamp = e.nativeEvent.timestamp;
+              const date = new Date(timestamp);
+              const adjustedDate = new Date(date.getTime());
+              setDate(adjustedDate.toISOString().split('T')[0]);
+              console.log(adjustedDate.toISOString());
             }
           }
           }
