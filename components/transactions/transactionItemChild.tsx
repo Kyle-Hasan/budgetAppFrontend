@@ -57,8 +57,8 @@ const TransactionItemChild = ({transaction,deleteTransaction,showAccountAndBudge
     <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Amount:</Text>  ${transaction.amount}</Text></View>
     <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Date:</Text>  {transaction.date}</Text></View>
     <View style={styles.topSection}><Text style={styles.rightText}><Text style={styles.boldText}>Type:</Text>  {transaction.type?.toLowerCase()}</Text></View>
-    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Account:</Text> {transaction.account?.name}</Text></View>}
-    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.rightText}><Text style={styles.boldText}>Budget:</Text>{transaction.budget?.name}</Text></View>}
+    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.textStyle}><Text style={styles.boldText}>Account: </Text> {transaction.account?.name}</Text></View>}
+    {showAccountAndBudget && <View style={styles.topSection}><Text style={styles.rightText}><Text style={styles.boldText}>Budget: </Text>{transaction.budget?.name}</Text></View>}
     
     <View style={styles.buttonBar}>
       <TouchableOpacity onPress={editNavigate}>

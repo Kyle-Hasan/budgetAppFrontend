@@ -19,16 +19,20 @@ const DateInput = ({date,setDate,formInput}:DateInputProps)=> {
         (<View><TouchableOpacity onPress={()=> {setOpenDatePicker(true)}}><View style={{...styles.input,width: formInput ? 200 : Dimensions.get('window').width * 0.30}}>
           <Text style={styles.label}>{date ? date : new Date().toISOString().split('T')[0]}</Text></View></TouchableOpacity>
       {openDatePicker&&<DateTimePicker
+          timeZoneOffsetInMinutes={0} 
           testID="dateTimePicker"
           value={date ? new Date(Date.parse(date)) : new Date()}
           onChange={(e)=> {
             setOpenDatePicker(false)
             if (e.type === 'set') {
               const timestamp = e.nativeEvent.timestamp;
+              console.log(timestamp)
               const date = new Date(timestamp);
+            
               const adjustedDate = new Date(date.getTime());
-              setDate(adjustedDate.toISOString().split('T')[0]);
-              console.log(adjustedDate.toISOString());
+             
+              setDate(date.toISOString().split('T')[0]);
+           //   console.log(adjustedDate.toISOString());
             }
           }
           }
