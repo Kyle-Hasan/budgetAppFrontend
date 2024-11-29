@@ -144,7 +144,7 @@ export default function TransactionSummary() {
     }
   };
 
-  const debouncedFilter = useDebounce(filterTransactions, 200);
+  const debouncedFilter = useDebounce(filterTransactions, 500);
 
   const nameSearch = async (pageNumber: number, name: string) => {
     setLoading(true);
@@ -240,11 +240,11 @@ const filterByType = (type:string) => {
   </TouchableOpacity>)
       }
     }></FlatList>
-    <TouchableOpacity style={styles.sortButton} onPress={() => filterByType("EXPENSE")}>
+    <TouchableOpacity style={filter === "EXPENSE" ? styles.sortButtonSelected : styles.sortButton} onPress={() => filterByType("EXPENSE")}>
     <Text style={styles.text} >Filter by expense</Text>
    
   </TouchableOpacity>
-  <TouchableOpacity style={styles.sortButton} onPress={() =>  filterByType("INCOME")}>
+  <TouchableOpacity style={filter === "INCOME" ? styles.sortButtonSelected : styles.sortButton} onPress={() =>  filterByType("INCOME")}>
     <Text style={styles.text} >Filter by income</Text>
     
   </TouchableOpacity>
@@ -256,6 +256,17 @@ const filterByType = (type:string) => {
     
   </TouchableOpacity>
 </View>
+<View style={styles.center}>
+              <TextInput
+                autoCorrect={false}
+                value={searchVal}
+                onChangeText={handleSearchChange}
+                autoCapitalize="none"
+                style={styles.input}
+                placeholderTextColor={"white"}
+                placeholder="search by name"
+              />
+            </View>
           </View>
         }
         onEndReachedThreshold={0.1}
@@ -353,9 +364,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginRight:8
   },
+  sortButtonSelected: {
+    color: '#ffffff',
+    fontSize: 14,
+    padding: 5,
+    backgroundColor: '#444',
+    borderRadius: 5,
+    textAlign: 'center',
+    marginRight:8,
+    borderColor: '#ffffff',
+    borderWidth:1
+
+  },
 
   text: {
     color: '#ffffff',
-  }
+  },
+
+  center: {
+    display:"flex",
+    justifyContent:"center",
+    alignItems:"center",
+    flexGrow:0.4,
+    
+  }, 
  
 });
+

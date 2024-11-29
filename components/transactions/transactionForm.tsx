@@ -123,7 +123,7 @@ import CurrencyInput from "react-native-currency-input";
         const body = {...transaction, amount: transaction.amount, type: getType, date:date}
         let response:any;
         if(transaction.id != -1) {
-          response = await api.patch('/transactions',body)
+          response = await api.put('/transactions',body)
         }
         else {
         response = await api.post('/transactions',body)

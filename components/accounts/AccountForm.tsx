@@ -96,7 +96,7 @@ const CreateAmountForm = () => {
         
         console.log("form data pre check",formData.id)
         if(formData.id && formData.id !== -1) {
-            response = await api.patch("/accounts",body)
+            response = await api.put("/accounts",body)
 
         }
         else {

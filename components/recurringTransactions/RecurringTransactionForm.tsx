@@ -72,7 +72,7 @@ const RecurringTransactionForm = ({recurringTransactionProp}:RecurringTransactio
       const body = { ...recurringTransaction, amount: recurringTransaction.amount, frequency: recurringTransaction.frequency, transactionType: recurringTransaction.transactionType ? recurringTransaction.transactionType.toUpperCase() : null };
      
       const response = recurringTransaction.id !== -1
-        ? await api.patch("/recurring", body)
+        ? await api.put("/recurring", body)
         : await api.post("/recurring", body);
     
         setRecurringTransaction(response.data)

@@ -97,6 +97,7 @@ const CreateBudgetForm = ({refreshSummary}:budgetFormProps) => {
 
       return ()=> {
         formContextObj?.setBudgetForm(null)
+        
       
       }
 
@@ -116,7 +117,7 @@ const CreateBudgetForm = ({refreshSummary}:budgetFormProps) => {
         
         console.log("form data pre check",formData.id)
         if(formData.id && formData.id !== -1) {
-            response = await api.patch("/budgets",body)
+            response = await api.put("/budgets",body)
 
         }
         else {
