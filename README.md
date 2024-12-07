@@ -1,50 +1,91 @@
-# Welcome to your Expo app 👋
+# Personal Finance Management Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This repository contains the frontend for a **Personal Finance Management App**, a mobile application designed to help users manage their budgets, accounts, and transactions. The frontend is built using **React Native** and **Expo**, providing a seamless and user-friendly experience.
 
-## Get started
+## Features
 
-1. Install dependencies
+- **User Authentication**: Login and register functionality integrated with the backend.
+- **Budget Tracking**: Visualize and manage personal budgets.
+- **Transaction Management**: Add, edit, and view transactions, including support for recurring transactions.
+- **Account Overview**: View and manage user accounts.
+- **Virtual Scrolling**: Efficiently handle large datasets in lists.
+- **Responsive Design**: Optimized for various screen sizes.
+
+## Technologies Used
+
+- **React Native**: Framework for building the mobile app.
+- **Expo**: Simplifies development and deployment of React Native applications.
+- **Tamagui**: For building consistent and visually appealing UI components.
+- **Axios**: For API requests to the backend.
+
+## Challenges Faced
+
+1. **First-time use of React Native and Expo**: This was the first mobile app project using these technologies.
+2. **Integration with Backend APIs**: Ensuring smooth communication with the Spring Boot backend.
+3. **Virtual Scrolling**: Implementing an efficient solution for rendering large lists of transactions.
+
+## What I Learned
+
+- Building mobile applications with **React Native** and **Expo**.
+- Implementing responsive and performant UI designs with **Tamagui**.
+- Handling API integrations using **Axios**.
+- Optimizing performance with techniques like virtual scrolling.
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** installed.
+- **Expo CLI** installed globally:
+
+  ```bash
+  npm install -g expo-cli
+  ```
+
+### Setup Instructions
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/your-username/finance-app-frontend.git
+   cd finance-app-frontend
+   ```
+
+2. **Install dependencies**:
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. **Start the application**:
 
    ```bash
-    npx expo start
+   expo start
    ```
 
-In the output, you'll find options to open the app in a
+4. Use the QR code displayed in the terminal to run the app on your mobile device using the Expo Go app or an emulator.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Folder Structure
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- `components/`: Reusable UI components.
+- `screens/`: Application screens.
+- `routes/`: File-based routing setup with Expo Router.
+- `assets/`: Static assets like images and icons.
 
-## Get a fresh project
+## Contributing
 
-When you're ready, run:
+Contributions are welcome! Please follow the steps below:
 
-```bash
-npm run reset-project
-```
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Commit your changes (`git commit -m 'Add your feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Open a pull request.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## License
 
-## Learn more
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Contact
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+For any inquiries or issues, please contact kylehasan1@gmail.com.
